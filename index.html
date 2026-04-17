@@ -608,8 +608,7 @@
 </div>
 
 <script>
-const TVMAZE_SCHEDULE = "https://api.tvmaze.com/schedule";
-const TVMAZE_WEB = "https://api.tvmaze.com/schedule/web";
+const TATERTV_API = "https://api.tatertv.app";
 
 const state = {
   selectedDates: new Set(),
@@ -818,39 +817,37 @@ async function fetchDate(dk) {
 
   const results = [];
 
-  // Make a broadcast call for EACH selected country
-  const broadcastFetches = [...state.countries].map(cc =>
-    fetch(`${TVMAZE_SCHEDULE}?country=${cc}&date=${dk}`)
+  // Fetch from our Worker API for each selected country
+  const fetches = [...state.countries].map(cc =>
+    fetch(`${TATERTV_API}/schedule?date=${dk}&country=${cc}`)
+      .then(r => r.ok ? r.json() : null)
+      .catch(() => null)
   );
-  // Only fetch streaming when US is selected
-  const includeStreaming = state.countries.has("US");
-  const fetchList = includeStreaming
-    ? [...broadcastFetches, fetch(`${TVMAZE_WEB}?date=${dk}`)]
-    : broadcastFetches;
-  const allFetches = await Promise.allSettled(fetchList);
 
-  // Process broadcast results
-  const broadcastCount = broadcastFetches.length;
-  for (let i = 0; i < broadcastCount; i++) {
-    try {
-      const res = allFetches[i];
-      if (res.status === "fulfilled" && res.value.ok) {
-        const data = await res.value.json();
-        data.forEach(ep => { const s = parseBroadcast(ep); if (s) results.push(s); });
-      }
-    } catch(e) { console.warn("Broadcast failed:", e); }
-  }
+  const responses = await Promise.all(fetches);
+  const seenWebEpisodes = new Set();
 
-  // Process web/streaming result (only if we fetched it)
-  if (includeStreaming) {
-    try {
-      const webRes = allFetches[broadcastCount];
-      if (webRes.status === "fulfilled" && webRes.value.ok) {
-        const data = await webRes.value.json();
-        data.forEach(ep => { const s = parseWeb(ep); if (s) results.push(s); });
-      }
-    } catch(e) { console.warn("Web failed:", e); }
-  }
+  responses.forEach(data => {
+    if (!data) return;
+
+    // Process broadcast episodes
+    if (Array.isArray(data.broadcast)) {
+      data.broadcast.forEach(ep => {
+        const s = parseBroadcast(ep);
+        if (s) results.push(s);
+      });
+    }
+
+    // Process web/streaming episodes (dedupe across countries since it's the same data)
+    if (Array.isArray(data.web)) {
+      data.web.forEach(ep => {
+        if (seenWebEpisodes.has(ep.id)) return;
+        seenWebEpisodes.add(ep.id);
+        const s = parseWeb(ep);
+        if (s) results.push(s);
+      });
+    }
+  });
 
   // Dedupe exact same episode from multiple sources
   const seen = new Set();
