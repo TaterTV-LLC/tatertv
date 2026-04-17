@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0a">
+<title>TaterTV — TV Guide, Schedule & Calendar</title>
+<meta name="description" content="Find new episodes and premieres airing tonight. A TV guide, schedule, and calendar across every network and streaming service, all in one place.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tatertv.app/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tatertv.app/">
+<meta property="og:title" content="TaterTV — TV Guide, Schedule & Calendar">
+<meta property="og:description" content="Find new episodes and premieres airing tonight. A TV guide, schedule, and calendar across every network and streaming service, all in one place.">
+<meta property="og:site_name" content="TaterTV">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:url" content="https://tatertv.app/">
+<meta name="twitter:title" content="TaterTV — TV Guide, Schedule & Calendar">
+<meta name="twitter:description" content="Find new episodes and premieres airing tonight. A TV guide, schedule, and calendar across every network and streaming service, all in one place.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;0,9..40,800;1,9..40,400&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: #0a0a0a;
+    color: #f0f0f0;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* Ambient background */
+  .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .ambient-orb1 { position: absolute; top: -18%; left: -8%; width: 550px; height: 550px; background: radial-gradient(circle, rgba(210,140,60,0.04), transparent 70%); filter: blur(90px); }
+  .ambient-orb2 { position: absolute; bottom: -18%; right: -8%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(180,90,40,0.03), transparent 70%); filter: blur(90px); }
+  .ambient-scan { position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.005) 2px, rgba(255,255,255,0.005) 4px); }
+
+  .container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 20px 100px; }
+
+  /* ---- HERO / BRAND HEADER ---- */
+  .brand-header {
+    padding: 16px 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand-left { display: flex; align-items: center; gap: 14px; }
+  .brand-logo {
+    width: 52px; height: 44px;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    filter: drop-shadow(0 4px 12px rgba(210,140,60,0.15));
+  }
+  .tv-body {
+    width: 100%; height: 100%;
+    background: linear-gradient(180deg, #4a4a4a, #2a2a2a 40%, #1e1e1e);
+    border-radius: 6px;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    border: 1.5px solid rgba(255,255,255,0.08);
+  }
+  .tv-screen {
+    width: 32px; height: 26px;
+    background: linear-gradient(135deg, #1a1a2e, #0a0a14);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.5), 0 0 6px rgba(210,140,60,0.15);
+    margin-left: -3px;
+  }
+  .tv-screen::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(210,140,60,0.08), transparent 50%);
+    border-radius: 4px;
+  }
+  .tv-screen::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent);
+    border-radius: 4px 4px 0 0;
+  }
+  .tv-antenna-l, .tv-antenna-r {
+    position: absolute; bottom: 100%;
+    width: 1.5px; height: 12px;
+    background: linear-gradient(to top, #555, #999);
+    border-radius: 1px;
+  }
+  .tv-antenna-l { left: 16px; transform: rotate(-25deg); transform-origin: bottom center; }
+  .tv-antenna-r { right: 16px; transform: rotate(25deg); transform-origin: bottom center; }
+  .tv-antenna-l::after, .tv-antenna-r::after {
+    content: '';
+    position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+    width: 3px; height: 3px; border-radius: 50%;
+    background: #d28c3c;
+    box-shadow: 0 0 4px rgba(210,140,60,0.6);
+  }
+  .tv-feet {
+    position: absolute; bottom: -3px; left: 10px; right: 10px;
+    display: flex; justify-content: space-between;
+  }
+  .tv-foot {
+    width: 5px; height: 3px;
+    background: #333;
+    border-radius: 0 0 2px 2px;
+  }
+  .tv-knobs {
+    position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .tv-knobs span {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 0.5px solid rgba(255,255,255,0.06);
+  }
+  .brand-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #f5e6d0, #d28c3c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .brand-tagline {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(210,140,60,0.5);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 2px;
+  }
+  .brand-right {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+  }
+  .brand-status {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3);
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px;
+  }
+
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #d28c3c; box-shadow: 0 0 10px rgba(210,140,60,0.5); animation: pulse 2s ease-in-out infinite; display: inline-block; }
+
+  /* Country picker */
+  .country-btn {
+    padding: 6px 14px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.55);
+    font-size: 11px; font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer; transition: all 0.2s ease;
+    letter-spacing: 0.5px; flex-shrink: 0;
+  }
+  .country-btn:active { transform: scale(0.96); }
+  .country-btn.active {
+    border-color: rgba(210,140,60,0.5);
+    background: rgba(210,140,60,0.1);
+    color: #d28c3c;
+  }
+  .tag-line { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 3px; font-family: 'JetBrains Mono', monospace; }
+  .subtitle { font-size: 12px; color: rgba(255,255,255,0.25); font-family: 'JetBrains Mono', monospace; }
+
+  /* Week ribbon pills */
+  .week-pill {
+    flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05); cursor: pointer; transition: all 0.25s ease;
+    min-width: 80px; position: relative;
+  }
+  .week-pill:active { transform: scale(0.96); }
+  .week-pill.current { background: rgba(210,140,60,0.08); border-color: rgba(210,140,60,0.25); }
+  .week-pill.selected { border-color: rgba(210,140,60,0.5); background: rgba(210,140,60,0.08); }
+  .week-pill .pill-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace; }
+  .week-pill.current .pill-label { color: #d28c3c; }
+  .week-pill.selected .pill-label { color: rgba(255,255,255,0.7); }
+  .week-pill .pill-num { font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.7); font-family: 'DM Sans', sans-serif; }
+  .week-pill.selected .pill-num { color: #f0f0f0; }
+  .week-pill .pill-month { font-size: 9px; color: rgba(255,255,255,0.3); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; }
+  .week-pill .pill-count { font-size: 9px; color: #d28c3c; font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+  .talkshow-group { margin-top: 8px; }
+  .talkshow-toggle {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    cursor: pointer; transition: all 0.2s ease;
+    user-select: none; -webkit-user-select: none;
+  }
+  .talkshow-toggle:active { transform: scale(0.98); }
+  .talkshow-toggle:hover { border-color: rgba(255,255,255,0.1); }
+  .talkshow-toggle-label {
+    font-size: 12px; font-weight: 600;
+    color: rgba(255,255,255,0.35);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px; flex: 1;
+  }
+  .talkshow-toggle-count {
+    font-size: 10px; color: rgba(255,255,255,0.2);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .talkshow-toggle-chevron {
+    font-size: 11px; color: rgba(255,255,255,0.2);
+    transition: transform 0.25s ease;
+  }
+  .talkshow-group.open .talkshow-toggle-chevron { transform: rotate(180deg); }
+  .talkshow-group.open .talkshow-toggle { border-color: rgba(255,255,255,0.08); }
+  .talkshow-list { display: none; margin-top: 4px; }
+  .talkshow-group.open .talkshow-list { display: grid; gap: 6px; }
+
+  /* Date ribbon */
+  .date-ribbon { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 14px; scroll-behavior: smooth; }
+  .date-btn {
+    flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05); cursor: pointer; transition: all 0.25s ease;
+    min-width: 68px; position: relative;
+  }
+  .date-btn:active { transform: scale(0.96); }
+  .date-btn.today { background: rgba(210,140,60,0.08); border-color: rgba(210,140,60,0.25); }
+  .date-btn.selected { border-color: rgba(210,140,60,0.5); background: rgba(210,140,60,0.08); }
+  .date-btn .day-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; font-family: 'JetBrains Mono', monospace; }
+  .date-btn.today .day-label { color: #d28c3c; }
+  .date-btn.selected .day-label { color: rgba(255,255,255,0.7); }
+  .date-btn .day-num { font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.7); font-family: 'DM Sans', sans-serif; }
+  .date-btn.selected .day-num { color: #f0f0f0; }
+  .date-btn .day-month { font-size: 9px; color: rgba(255,255,255,0.3); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; }
+  .date-btn .count { font-size: 9px; color: #d28c3c; font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+  .date-btn .loading-dot { width: 4px; height: 4px; border-radius: 50%; background: #d28c3c; animation: pulse 1s infinite; position: absolute; top: 6px; right: 6px; }
+
+  /* Filters */
+  .filters { display: flex; gap: 10px; margin-bottom: 14px; }
+  .filter-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .filter-group label { font-size: 10px; color: rgba(255,255,255,0.25); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.5px; }
+  .filter-group select {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.7); padding: 8px 10px; border-radius: 10px;
+    font-size: 11px; font-family: 'JetBrains Mono', monospace; cursor: pointer; outline: none;
+    width: 100%; -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(255,255,255,0.3)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+  }
+  .filter-group select option { background: #1a1a1a; }
+
+  /* Date sections */
+  .date-section { margin-bottom: 36px; }
+  .date-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(10,10,10,0.92); backdrop-filter: blur(12px);
+    padding: 8px 0; margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px;
+  }
+  .date-header h2 { font-size: 15px; font-weight: 700; font-family: 'DM Sans', sans-serif; color: rgba(255,255,255,0.65); white-space: nowrap; }
+  .date-header h2.today { color: #d28c3c; }
+  .date-header .line { flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+  .date-header .count { font-size: 11px; color: rgba(255,255,255,0.25); font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+
+  /* Show cards */
+  .show-list { display: grid; grid-template-columns: 1fr; gap: 6px; }
+
+  .show-row {
+    border-radius: 12px; position: relative; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08); cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none; -webkit-user-select: none;
+  }
+  .show-row:hover { border-color: rgba(255,255,255,0.16); }
+  .show-row .glow { position: absolute; top: 0; right: 0; width: 120px; height: 60px; pointer-events: none; }
+
+  .show-row .summary {
+    display: flex; align-items: center; gap: 10px; padding: 13px 14px;
+    position: relative; z-index: 1;
+  }
+  .show-row .summary img { width: 36px; height: 36px; object-fit: cover; border-radius: 8px; flex-shrink: 0; opacity: 0.9; }
+  .show-row .summary .img-placeholder { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .show-row .summary .title { font-size: 16px; font-weight: 700; color: #f0f0f0; font-family: 'DM Sans', sans-serif; }
+  .show-row .summary .genre-pip { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.6px; font-family: 'DM Sans', sans-serif; flex-shrink: 0; }
+  .show-row .summary .network-sm { font-size: 11px; font-weight: 600; font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
+  .show-row .summary .premiere-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; animation: pulse 2s infinite; }
+  .show-row .summary .chevron { font-size: 12px; color: rgba(255,255,255,0.2); transition: transform 0.25s ease; flex-shrink: 0; }
+  .show-row.expanded .summary .chevron { transform: rotate(180deg); }
+
+  .show-row .details {
+    max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease;
+    padding: 0 14px;
+  }
+  .show-row.expanded .details { max-height: 1200px; padding: 0 14px 14px; }
+  .show-row .details-inner { display: flex; gap: 14px; }
+  .show-row .details-inner img { width: 56px; height: 80px; object-fit: cover; border-radius: 10px; flex-shrink: 0; opacity: 0.9; }
+  .show-row .details-inner .detail-info { flex: 1; min-width: 0; }
+  .show-row .meta { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .show-row .network { font-size: 13px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+  .show-row .time { color: rgba(255,255,255,0.3); font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+  .show-row .season-badge { color: rgba(255,255,255,0.45); font-size: 11px; font-family: 'JetBrains Mono', monospace; background: rgba(255,255,255,0.05); padding: 2px 7px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
+  .show-row .type-label { font-size: 10px; color: rgba(255,255,255,0.25); font-family: 'JetBrains Mono', monospace; }
+  .show-row .ep-name { margin: 0 0 4px 0; color: rgba(255,255,255,0.55); font-size: 13px; font-style: italic; font-family: 'DM Sans', sans-serif; }
+  .show-row .desc { margin: 0 0 8px 0; color: rgba(255,255,255,0.4); font-size: 13px; line-height: 1.5; font-family: 'DM Sans', sans-serif; }
+
+  /* Collapsible summary sections */
+  .summary-section { margin-bottom: 8px; }
+  .summary-toggle {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 0; cursor: pointer; user-select: none; -webkit-user-select: none;
+  }
+  .summary-toggle .toggle-icon {
+    width: 16px; height: 16px; border-radius: 4px;
+    background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: rgba(255,255,255,0.35);
+    transition: all 0.2s ease; flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.06);
+    transform: rotate(-90deg);
+  }
+  .summary-section.open .toggle-icon {
+    background: rgba(210,140,60,0.12);
+    color: rgba(210,140,60,0.8);
+    border-color: rgba(210,140,60,0.15);
+    transform: rotate(0deg);
+  }
+  .summary-toggle .toggle-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(255,255,255,0.25);
+    transition: color 0.2s ease;
+  }
+  .summary-section.open .toggle-label { color: rgba(210,140,60,0.6); }
+  .summary-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+  .summary-section.open .summary-body {
+    max-height: 200px; opacity: 1;
+  }
+  .show-row .tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .show-row .genre-tag { font-size: 9px; font-weight: 600; padding: 3px 10px; border-radius: 6px; font-family: 'DM Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.8px; }
+  .show-row .rating-tag { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); padding: 3px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; }
+  .show-row .premiere-badge { color: #fff; font-size: 8px; font-weight: 800; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; font-family: 'DM Sans', sans-serif; }
+
+  /* Loading */
+  .loading-state { text-align: center; padding: 80px 20px; }
+  .loading-dots { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; }
+  .loading-dots span { width: 10px; height: 10px; border-radius: 50%; background: #d28c3c; }
+  .loading-dots span:nth-child(1) { animation: pulse 1.2s ease-in-out 0s infinite; }
+  .loading-dots span:nth-child(2) { animation: pulse 1.2s ease-in-out 0.2s infinite; }
+  .loading-dots span:nth-child(3) { animation: pulse 1.2s ease-in-out 0.4s infinite; }
+  .loading-text { color: rgba(255,255,255,0.4); font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+
+  .mini-loading { display: flex; gap: 6px; justify-content: center; padding: 40px 0; }
+  .mini-loading span { width: 6px; height: 6px; border-radius: 50%; background: #d28c3c; }
+  .mini-loading span:nth-child(1) { animation: pulse 1.2s ease-in-out 0s infinite; }
+  .mini-loading span:nth-child(2) { animation: pulse 1.2s ease-in-out 0.15s infinite; }
+  .mini-loading span:nth-child(3) { animation: pulse 1.2s ease-in-out 0.3s infinite; }
+
+  .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; }
+  .footer p { color: rgba(255,255,255,0.4); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+  .footer a { color: rgba(210,140,60,0.7); text-decoration: none; font-size: 11px; font-family: 'JetBrains Mono', monospace; transition: color 0.2s; }
+  .footer a:hover { color: #d28c3c; }
+  .footer .footer-brand { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px; color: rgba(210,140,60,0.6); margin-bottom: 8px; }
+
+  /* Search */
+  .search-wrap { position: relative; margin-bottom: 12px; }
+  .search-wrap input {
+    width: 100%; padding: 10px 14px 10px 36px; border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.07);
+    color: #f0f0f0; font-size: 13px; font-family: 'DM Sans', sans-serif;
+    outline: none; transition: all 0.25s ease;
+  }
+  .search-wrap input::placeholder { color: rgba(255,255,255,0.35); }
+  .search-wrap input:focus { border-color: rgba(210,140,60,0.5); background: rgba(255,255,255,0.09); }
+  .search-wrap .search-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 13px; color: rgba(255,255,255,0.35); pointer-events: none;
+    transition: color 0.25s ease;
+  }
+  .search-wrap input:focus ~ .search-icon { color: rgba(210,140,60,0.6); }
+  .search-wrap .search-clear {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,0.08); border: none; color: rgba(255,255,255,0.4);
+    width: 20px; height: 20px; border-radius: 50%; font-size: 11px; cursor: pointer;
+    display: none; align-items: center; justify-content: center;
+    transition: all 0.2s ease;
+  }
+  .search-wrap .search-clear:hover { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); }
+  .search-wrap.has-query .search-clear { display: flex; }
+
+  .search-mode-badge {
+    display: none; align-items: center; gap: 6px; margin-bottom: 10px;
+    font-size: 10px; font-family: 'JetBrains Mono', monospace; color: rgba(210,140,60,0.7);
+    letter-spacing: 0.5px;
+  }
+  .search-mode-badge .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #d28c3c; animation: pulse 2s infinite; }
+  body.search-mode .search-mode-badge { display: flex; }
+  body.search-mode .date-ribbon { opacity: 0.3; pointer-events: none; }
+  body.search-mode .filters { opacity: 0.3; pointer-events: none; }
+
+  /* Week nav buttons */
+  .week-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    display: flex; gap: 8px; padding: 10px 16px;
+    background: rgba(10,10,10,0.94); backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(210,140,60,0.08);
+  }
+  .nav-btn {
+    padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.65);
+    font-size: 11px; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+    cursor: pointer; transition: all 0.2s ease;
+  }
+  .nav-btn:hover { background: rgba(210,140,60,0.08); color: rgba(255,255,255,0.7); border-color: rgba(210,140,60,0.2); }
+  .nav-btn:active { transform: scale(0.97); }
+  .nav-btn.flex { flex: 1; }
+
+  /* Mode toggle */
+  .mode-toggle {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 3px;
+  }
+  .mode-btn {
+    padding: 5px 8px; border-radius: 7px; border: none; background: transparent;
+    color: rgba(255,255,255,0.55); font-size: 10px; font-weight: 600;
+    font-family: 'JetBrains Mono', monospace; cursor: pointer; transition: all 0.2s ease;
+    letter-spacing: 0.2px; white-space: nowrap; text-align: center;
+  }
+  .mode-btn.active {
+    background: rgba(210,140,60,0.15); color: #d28c3c;
+    border: 1px solid rgba(210,140,60,0.25);
+  }
+  .mode-btn.full-width { grid-column: unset; }
+
+  /* Planner calendar grid */
+  .calendar-wrap { margin-bottom: 14px; max-width: 240px; margin-left: auto; margin-right: auto; }
+  .calendar-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .calendar-month-label {
+    font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .calendar-nav {
+    display: flex; gap: 6px;
+  }
+  .calendar-nav button {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.4); width: 28px; height: 28px; border-radius: 8px;
+    font-size: 13px; cursor: pointer; transition: all 0.2s ease;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .calendar-nav button:active { transform: scale(0.94); }
+  .calendar-nav button:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
+  .calendar-weekdays {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 4px;
+  }
+  .calendar-weekdays span {
+    text-align: center; font-size: 9px; font-weight: 700;
+    color: rgba(255,255,255,0.2); font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase; padding: 4px 0;
+  }
+  .calendar-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;
+  }
+  .calendar-day {
+    aspect-ratio: 1; border-radius: 8px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; cursor: pointer;
+    border: 1px solid transparent; transition: all 0.2s ease;
+    position: relative; gap: 2px;
+  }
+  .calendar-day:active { transform: scale(0.93); }
+  .calendar-day.empty { cursor: default; }
+  .calendar-day.today { border-color: rgba(210,140,60,0.3); background: rgba(210,140,60,0.06); }
+  .calendar-day.selected { border-color: rgba(210,140,60,0.6); background: rgba(210,140,60,0.12); }
+  .calendar-day.past:not(.selected):not(.today) { opacity: 0.45; }
+  .calendar-day .pday-num {
+    font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.6);
+    font-family: 'DM Sans', sans-serif; line-height: 1;
+  }
+  .calendar-day.today .pday-num { color: #d28c3c; }
+  .calendar-day.selected .pday-num { color: #f0f0f0; }
+  .calendar-day .pday-dots {
+    display: flex; gap: 2px; align-items: center; justify-content: center;
+    min-height: 5px;
+  }
+  .calendar-day .pdot {
+    width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0;
+  }
+  @media (max-width: 480px) {
+    .brand-name { font-size: 24px; }
+    .brand-logo { width: 46px; height: 38px; margin-top: 8px; }
+    .tv-screen { width: 28px; height: 22px; font-size: 13px; }
+    .tv-antenna-l, .tv-antenna-r { height: 10px; }
+    .tv-antenna-l { left: 13px; }
+    .tv-antenna-r { right: 13px; }
+    .brand-tagline { font-size: 9px; letter-spacing: 2px; }
+    .container { padding: 0 16px 100px; }
+    .date-header { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient">
+  <div class="ambient-orb1"></div>
+  <div class="ambient-orb2"></div>
+  <div class="ambient-scan"></div>
+</div>
+
+<div class="container" id="top">
+
+  <!-- Brand Header -->
+  <div class="brand-header">
+    <div class="brand-left">
+      <div class="brand-logo" id="brandLogo" onclick="handleLogTap()">
+        <div class="tv-antenna-l"></div>
+        <div class="tv-antenna-r"></div>
+        <div class="tv-body">
+          <div class="tv-screen">🥔</div>
+          <div class="tv-knobs"><span></span><span></span></div>
+        </div>
+        <div class="tv-feet"><div class="tv-foot"></div><div class="tv-foot"></div></div>
+      </div>
+      <div class="brand-name">TaterTV</div>
+    </div>
+    <div class="brand-right">
+    </div>
+  </div>
+
+  <div class="date-ribbon" id="dateRibbon"></div>
+  <div id="premieresRibbon" class="date-ribbon" style="display:none"></div>
+  <div id="calendarWrap" class="calendar-wrap" style="display:none"></div>
+
+  <div class="mode-toggle" style="margin-bottom:12px">
+    <button class="mode-btn active" id="btnSwipe" onclick="setMode('swipe')">Guide</button>
+    <button class="mode-btn" id="btnCalendar" onclick="setMode('calendar')">Calendar</button>
+    <button class="mode-btn full-width" id="btnPremieres" onclick="setMode('premieres')">Premieres</button>
+  </div>
+
+  <div class="search-wrap" id="searchWrap">
+    <input type="text" id="searchInput" placeholder="Search shows across all days…" autocomplete="off" oninput="onSearchInput(this.value)" onkeydown="if(event.key==='Enter'){onSearchEnter(this.value)}" />
+    <span class="search-icon">⌕</span>
+    <button class="search-clear" onclick="clearSearch()">✕</button>
+  </div>
+  <div class="search-mode-badge" id="searchBadge">
+    <span class="badge-dot"></span>
+    <span>Searching all days — <span id="searchMatchCount">0</span> matches</span>
+  </div>
+
+  <div id="countryBar" style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:nowrap"></div>
+  <div id="filtersArea"></div>
+  <div id="content"></div>
+
+  <div class="footer">
+    <div class="footer-brand">TaterTV</div>
+    <p>Data from <a href="https://www.tvmaze.com" target="_blank">TVMaze</a></p>
+    <p style="margin-top:8px"><a href="https://tatertv.app">tatertv.app</a> · <a href="/about.html">About</a> · <a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy Policy</a> · <a href="/disclosure.html">Affiliate Disclosure</a></p>
+    <p style="margin-top:6px">Data via <a href="https://www.tvmaze.com" target="_blank" rel="noopener">TVMaze</a> · TaterTV may earn commissions from links on this site. <a href="/disclosure.html">Learn more</a></p>
+    <p style="margin-top:6px">© TaterTV LLC</p>
+    <p style="margin-top:10px"><a href="#top">↑ Back to top</a></p>
+  </div>
+</div>
+
+<div id="weekBtns" class="week-nav">
+  <button class="nav-btn flex" onclick="navPrev()">← Prev</button>
+  <button class="nav-btn flex" onclick="selectSingleDate(0)">Today</button>
+  <button class="nav-btn flex" onclick="navNext()">Next →</button>
+</div>
+
+<div id="premieresNav" class="week-nav" style="display:none">
+  <button class="nav-btn flex" onclick="navPremiereWeek(-1)">← Prev</button>
+  <button class="nav-btn flex" onclick="navPremiereWeek(0)">This Week</button>
+  <button class="nav-btn flex" onclick="navPremiereWeek(1)">Next →</button>
+</div>
+
+<script>
+const TVMAZE_SCHEDULE = "https://api.tvmaze.com/schedule";
+const TVMAZE_WEB = "https://api.tvmaze.com/schedule/web";
+
+const state = {
+  selectedDates: new Set(),
+  showsByDate: {},
+  loadingDates: new Set(),
+  fetchedDates: new Set(),
+  genreFilter: "All",
+  sourceFilter: "All",
+  searchQuery: "",
+  searchMode: false,
+  prefetchTriggered: false,
+  countries: new Set(["US"]),
+  mode: "swipe",
+  calendarMonth: new Date(),
+  premieresWeekOffset: 0,
+  debugMode: false,
+};
+
+const NETWORK_TO_STREAMING = {
+  "abc": "Hulu", "nbc": "Peacock", "cbs": "Paramount+", "fox": "Hulu",
+  "fx": "Hulu", "fxx": "Hulu", "cw": "Max", "usa network": "Peacock",
+  "bravo": "Peacock", "e!": "Peacock", "oxygen": "Peacock", "syfy": "Peacock",
+  "msnbc": "Peacock", "amc": "AMC+", "bbc america": "AMC+", "sundance tv": "AMC+",
+  "freeform": "Hulu", "nat geo": "Disney+", "national geographic": "Disney+",
+  "fx on hulu": "Hulu",
+};
+
+function getStreamingHome(network) {
+  const n = (network || "").toLowerCase();
+  for (const [k, v] of Object.entries(NETWORK_TO_STREAMING)) {
+    if (n.includes(k)) return v;
+  }
+  return null;
+}
+
+const genreColors = {
+  Drama: { accent: "#e74c3c", glow: "rgba(231,76,60,0.3)" },
+  Comedy: { accent: "#2ecc71", glow: "rgba(46,204,113,0.3)" },
+  Thriller: { accent: "#9b59b6", glow: "rgba(155,89,182,0.3)" },
+  "Science-Fiction": { accent: "#00d2ff", glow: "rgba(0,210,255,0.3)" },
+  Horror: { accent: "#e74c3c", glow: "rgba(231,76,60,0.4)" },
+  Action: { accent: "#f39c12", glow: "rgba(243,156,18,0.3)" },
+  Romance: { accent: "#e91e84", glow: "rgba(233,30,132,0.3)" },
+  Crime: { accent: "#8e7cc3", glow: "rgba(142,124,195,0.3)" },
+  Fantasy: { accent: "#5dade2", glow: "rgba(93,173,226,0.3)" },
+  Anime: { accent: "#ff6bcb", glow: "rgba(255,107,203,0.3)" },
+  Adventure: { accent: "#e67e22", glow: "rgba(230,126,34,0.3)" },
+  Mystery: { accent: "#7f8fa6", glow: "rgba(127,143,166,0.3)" },
+  Supernatural: { accent: "#a29bfe", glow: "rgba(162,155,254,0.3)" },
+  Family: { accent: "#fdcb6e", glow: "rgba(253,203,110,0.3)" },
+  Medical: { accent: "#00b894", glow: "rgba(0,184,148,0.3)" },
+  Legal: { accent: "#636e72", glow: "rgba(99,110,114,0.3)" },
+  Sports: { accent: "#00cec9", glow: "rgba(0,206,201,0.3)" },
+  Music: { accent: "#fd79a8", glow: "rgba(253,121,168,0.3)" },
+  History: { accent: "#c49b66", glow: "rgba(196,155,102,0.3)" },
+};
+const defaultColor = { accent: "#95a5a6", glow: "rgba(149,165,166,0.3)" };
+
+function getGenreStyle(genre) {
+  if (!genre) return defaultColor;
+  const key = Object.keys(genreColors).find(k => genre.toLowerCase().includes(k.toLowerCase()));
+  return genreColors[key] || defaultColor;
+}
+
+// Date helpers
+function dateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function fmtDate(d) { return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }); }
+function todayKey() { return dateKey(new Date()); }
+function yesterdayKey() { const y = new Date(); y.setDate(y.getDate()-1); return dateKey(y); }
+function isToday(dk) { return dk === todayKey(); }
+function isYesterday(dk) { return dk === yesterdayKey(); }
+function tomorrowKey() { const t = new Date(); t.setDate(t.getDate()+1); return dateKey(t); }
+function isTomorrow(dk) { return dk === tomorrowKey(); }
+function isPast(dk) { return dk < todayKey(); }
+function fmt12h(t) {
+  if (!t || t === "Streaming" || t === "TBA") return t;
+  const [h, m] = t.split(":").map(Number);
+  if (isNaN(h)) return t;
+  const period = h >= 12 ? "PM" : "AM";
+  const hour = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  return `${hour}:${String(m).padStart(2,"0")} ${period}`;
+}
+
+function getDates() {
+  const dates = [];
+  const today = new Date();
+  for (let i = -7; i <= 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    dates.push(d);
+  }
+  return dates;
+}
+
+const allDates = getDates();
+
+// Parse episodes
+const EXCLUDED_GENRES = new Set(["News"]);
+const EXCLUDED_NETWORK_PATTERNS = ["fox news", "msnbc", "ms now", "cnn", "newsnation", "c-span", "cnbc", "abc news", "watch it", "youtube", "abematv", "viutv", "kakaotvoice", "kakao", "noflix", "okko", "tv dne", "beacon", "bravi", "dytv", "stardomworld", "standomworld", "sweatnet", "gaia", "byutv", "pure flix", "up faith", "wow presents", "youku", "bilibili", "b/r live", "b/r", "outtv", "reelz", "nickelodeon", "nick jr", "disney junior", "disney channel", "disney xd", "wavve", "zeus", "amazon mx player", "смотрим"];
+const EXCLUDED_NETWORKS_EXACT = new Set(["n", "ti", "imp", "hex", "иви", "кинопоиск", "wink", "premier"]);
+const EXCLUDED_SHOWS = new Set(["general hospital", "days of our lives", "the young and the restless", "the bold and the beautiful", "good morning america: weekend edition", "good morning america"]);
+
+// Streamers that are only available in specific countries
+const COUNTRY_LOCKED_STREAMERS = {
+  // Canada
+  "cbc gem": "CA", "crave": "CA", "ctv": "CA", "global tv": "CA", "citytv": "CA",
+  // UK
+  "itvx": "GB", "itv": "GB", "all 4": "GB", "channel 4": "GB", "bbc iplayer": "GB",
+  "bbc one": "GB", "bbc two": "GB", "bbc three": "GB", "uktv play": "GB",
+  "my5": "GB", "channel 5": "GB", "sky go": "GB",
+  // Australia
+  "abc iview": "AU", "9now": "AU", "10 play": "AU", "binge": "AU",
+  "stan": "AU", "network 10": "AU", "nine network": "AU", "seven network": "AU",
+  "7plus": "AU", "abc australia": "AU",
+};
+
+function shouldExclude(show, network, airtime) {
+  if (state.debugMode) return false;
+  if (!show) return true;
+  if (show.language && show.language !== "English") return true;
+  if (show.genres && show.genres.some(g => EXCLUDED_GENRES.has(g))) return true;
+  if (show.type === "News") return true;
+  if (show.type === "Soap Opera") return true;
+  const netLower = (network || "").toLowerCase();
+  if (EXCLUDED_NETWORK_PATTERNS.some(p => netLower.includes(p))) return true;
+  if (EXCLUDED_NETWORKS_EXACT.has(netLower)) return true;
+  if (show.name && EXCLUDED_SHOWS.has(show.name.toLowerCase())) return true;
+  if (show.type === "Talk Show" && airtime && airtime >= "06:00" && airtime < "20:00") return true;
+  if (show.type === "Game Show" && airtime && airtime >= "06:00" && airtime < "20:00") return true;
+  // Block country-locked streamers unless that country is selected (or ALL selected)
+  if (state.countries.size < ALL_COUNTRIES.length) {
+    for (const [streamer, country] of Object.entries(COUNTRY_LOCKED_STREAMERS)) {
+      if (netLower.includes(streamer) && !state.countries.has(country)) return true;
+    }
+  }
+  return false;
+}
+
+const TZ_LABELS = {
+  "America/New_York": "ET", "America/Chicago": "CT", "America/Denver": "MT",
+  "America/Los_Angeles": "PT", "America/Toronto": "ET", "America/Vancouver": "PT",
+  "Europe/London": "GMT", "Europe/Dublin": "GMT", "Australia/Sydney": "AEST",
+  "Pacific/Auckland": "NZST",
+};
+function tzLabel(tz) { return TZ_LABELS[tz] || ""; }
+
+function parseBroadcast(ep) {
+  const show = ep.show || {};
+  const network = show.network?.name || show.webChannel?.name || "Unknown";
+  if (shouldExclude(show, network, ep.airtime)) return null;
+  const tz = show.network?.country?.timezone || show.webChannel?.country?.timezone || "";
+  const isSeriesPremiere = ep.season === 1 && ep.number === 1;
+  const isSeasonPremiere = ep.season > 1 && ep.number === 1;
+  const isPremiere = isSeriesPremiere || isSeasonPremiere;
+  let seasonStr = "";
+  if (isSeriesPremiere) seasonStr = "Series Premiere";
+  else if (isSeasonPremiere) seasonStr = `Season ${ep.season} Premiere`;
+  else if (ep.season && ep.number) seasonStr = `S${String(ep.season).padStart(2,"0")} E${String(ep.number).padStart(2,"0")}`;
+  return {
+    id: `b-${ep.id}`, title: show.name || ep.name || "Unknown",
+    episodeName: ep.name || "", network,
+    webChannel: show.webChannel?.name || null,
+    time: ep.airtime || "TBA", tz: tzLabel(tz), season: seasonStr,
+    genre: show.genres?.[0] || "Other",
+    showDescription: (show.summary || "").replace(/<[^>]*>/g, "").trim().slice(0, 500),
+    epDescription: (ep.summary || "").replace(/<[^>]*>/g, "").trim().slice(0, 300),
+    isSeason1: ep.season === 1, isSeriesPremiere, isSeasonPremiere, isPremiere,
+    rating: show.rating?.average ? `${show.rating.average}/10` : null,
+    image: show.image?.medium || null, showType: show.type || "", weight: show.weight || 0,
+  };
+}
+
+function parseWeb(ep) {
+  const show = ep._embedded?.show || {};
+  const network = ep.webChannel?.name || show.webChannel?.name || "Streaming";
+  if (shouldExclude(show, network, ep.airtime)) return null;
+  const tz = ep.webChannel?.country?.timezone || show.webChannel?.country?.timezone || show.network?.country?.timezone || "";
+  const isSeriesPremiere = ep.season === 1 && ep.number === 1;
+  const isSeasonPremiere = ep.season > 1 && ep.number === 1;
+  const isPremiere = isSeriesPremiere || isSeasonPremiere;
+  let seasonStr = "";
+  if (isSeriesPremiere) seasonStr = "Series Premiere";
+  else if (isSeasonPremiere) seasonStr = `Season ${ep.season} Premiere`;
+  else if (ep.season && ep.number) seasonStr = `S${String(ep.season).padStart(2,"0")} E${String(ep.number).padStart(2,"0")}`;
+  return {
+    id: `w-${ep.id}`, title: show.name || ep.name || "Unknown",
+    episodeName: ep.name || "", network,
+    time: ep.airtime || "Streaming", tz: tzLabel(tz), season: seasonStr,
+    genre: show.genres?.[0] || "Other",
+    showDescription: (show.summary || "").replace(/<[^>]*>/g, "").trim().slice(0, 500),
+    epDescription: (ep.summary || "").replace(/<[^>]*>/g, "").trim().slice(0, 300),
+    isSeason1: ep.season === 1, isSeriesPremiere, isSeasonPremiere, isPremiere,
+    rating: show.rating?.average ? `${show.rating.average}/10` : null,
+    image: show.image?.medium || null, showType: show.type || "", weight: show.weight || 0,
+  };
+}
+
+// Fetch
+async function fetchDate(dk) {
+  if (state.fetchedDates.has(dk)) return;
+  state.fetchedDates.add(dk);
+  state.loadingDates.add(dk);
+  render();
+
+  const results = [];
+
+  // Make a broadcast call for EACH selected country
+  const broadcastFetches = [...state.countries].map(cc =>
+    fetch(`${TVMAZE_SCHEDULE}?country=${cc}&date=${dk}`)
+  );
+  // Only fetch streaming when US is selected
+  const includeStreaming = state.countries.has("US");
+  const fetchList = includeStreaming
+    ? [...broadcastFetches, fetch(`${TVMAZE_WEB}?date=${dk}`)]
+    : broadcastFetches;
+  const allFetches = await Promise.allSettled(fetchList);
+
+  // Process broadcast results
+  const broadcastCount = broadcastFetches.length;
+  for (let i = 0; i < broadcastCount; i++) {
+    try {
+      const res = allFetches[i];
+      if (res.status === "fulfilled" && res.value.ok) {
+        const data = await res.value.json();
+        data.forEach(ep => { const s = parseBroadcast(ep); if (s) results.push(s); });
+      }
+    } catch(e) { console.warn("Broadcast failed:", e); }
+  }
+
+  // Process web/streaming result (only if we fetched it)
+  if (includeStreaming) {
+    try {
+      const webRes = allFetches[broadcastCount];
+      if (webRes.status === "fulfilled" && webRes.value.ok) {
+        const data = await webRes.value.json();
+        data.forEach(ep => { const s = parseWeb(ep); if (s) results.push(s); });
+      }
+    } catch(e) { console.warn("Web failed:", e); }
+  }
+
+  // Dedupe exact same episode from multiple sources
+  const seen = new Set();
+  const deduped = results.filter(s => {
+    const k = `${s.title}-${s.season}-${s.episodeName}`;
+    if (seen.has(k)) return false;
+    seen.add(k); return true;
+  });
+
+  // Group by title for multi-episode cards
+  const grouped = {};
+  deduped.forEach(s => {
+    if (!grouped[s.title]) {
+      grouped[s.title] = { ...s, extraEpisodes: [] };
+    } else {
+      grouped[s.title].extraEpisodes.push(s);
+      // Bubble up premiere if extra ep is a premiere and primary isn't
+      if (s.isPremiere && !grouped[s.title].isPremiere) {
+        grouped[s.title].isPremiere = true;
+        grouped[s.title].isSeriesPremiere = s.isSeriesPremiere;
+        grouped[s.title].isSeasonPremiere = s.isSeasonPremiere;
+        grouped[s.title].season = s.season;
+      }
+    }
+  });
+  const grouped_shows = Object.values(grouped);
+
+  // Smart sort
+  const NETWORK_BONUS = {
+    "max": 60, "hbo": 60, "hulu": 60, "disney+": 60, "paramount+": 60,
+    "apple tv+": 60, "amazon prime video": 60, "prime video": 60,
+    "netflix": 40, "peacock": 20,
+    "abc": 20, "nbc": 20, "cbs": 20, "fox": 20, "fx": 20, "amc": 20,
+  };
+  function getNetworkBonus(net) {
+    const n = (net || "").toLowerCase();
+    for (const [k, v] of Object.entries(NETWORK_BONUS)) { if (n.includes(k)) return v; }
+    return 0;
+  }
+  grouped_shows.forEach(s => {
+    let score = 0;
+    if (s.isSeriesPremiere) score += 10000;
+    else if (s.isSeasonPremiere) score += 5000;
+    score += (s.weight || 0) * 3;
+    const streamingHome = getStreamingHome(s.network);
+    score += streamingHome ? getNetworkBonus(streamingHome) : getNetworkBonus(s.network);
+    s._score = score;
+  });
+  grouped_shows.sort((a, b) => {
+    if (b._score !== a._score) return b._score - a._score;
+    const at = t => (!t || t === "TBA" || t === "Streaming") ? "99:99" : t;
+    return at(a.time).localeCompare(at(b.time));
+  });
+
+  state.showsByDate[dk] = grouped_shows;
+  state.loadingDates.delete(dk);
+  if (state.mode === "premieres") renderPremieresRibbon();
+  render();
+}
+
+function toggleDate(dk) {
+  // Single select — just switch to tapped date
+  if (state.selectedDates.has(dk) && state.selectedDates.size === 1) return; // already the only one
+  state.selectedDates.clear();
+  state.selectedDates.add(dk);
+  fetchDate(dk);
+  render();
+  setTimeout(() => {
+    const ribbon = document.getElementById("dateRibbon");
+    const btn = ribbon?.querySelector(`[onclick="toggleDate('${dk}')"]`);
+    if (btn && ribbon) {
+      const left = btn.offsetLeft - ribbon.offsetWidth / 2 + btn.offsetWidth / 2;
+      ribbon.scrollTo({ left, behavior: "smooth" });
+    }
+  }, 50);
+}
+
+function selectDateRange(startOffset, endOffset) {
+  const today = new Date();
+  state.selectedDates.clear();
+  for (let i = startOffset; i <= endOffset; i++) {
+    const d = new Date(today); d.setDate(today.getDate() + i);
+    const dk = dateKey(d);
+    if (allDates.some(ad => dateKey(ad) === dk)) {
+      state.selectedDates.add(dk); fetchDate(dk);
+    }
+  }
+  render();
+}
+
+function selectSingleDate(offset) {
+  const d = new Date(); d.setDate(d.getDate() + offset);
+  state.selectedDates.clear();
+  const dk = dateKey(d);
+  state.selectedDates.add(dk); fetchDate(dk);
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  // Scroll date ribbon to keep selected date in view
+  setTimeout(() => {
+    const ribbon = document.getElementById("dateRibbon");
+    const btn = ribbon?.querySelector(`[onclick="toggleDate('${dk}')"]`);
+    if (btn && ribbon) {
+      const left = btn.offsetLeft - ribbon.offsetWidth / 2 + btn.offsetWidth / 2;
+      ribbon.scrollTo({ left, behavior: "smooth" });
+    }
+  }, 50);
+}
+
+function toggleCard(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle("expanded");
+}
+
+function toggleTalkShows(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle("open");
+}
+
+function toggleSummary(ev, id) {
+  ev.stopPropagation();
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle("open");
+}
+
+function showCardHTML(show, index) {
+  const gs = getGenreStyle(show.genre);
+  const delay = Math.min(index, 20) * 25;
+  const cardId = `card-${show.id.replace(/[^a-zA-Z0-9-]/g, "")}`;
+
+  const thumbHTML = show.image
+    ? `<img src="${show.image}" alt="">`
+    : `<div class="img-placeholder" style="background:${gs.accent}15;color:${gs.accent}">▸</div>`;
+  const premiereDot = "";
+  let seasonSmall = "";
+  if (show.isSeriesPremiere) {
+    seasonSmall = `<span class="season-badge" style="font-size:9px;background:rgba(46,204,113,0.15);color:#2ecc71;border:1px solid rgba(46,204,113,0.3)">${show.season}</span>`;
+  } else if (show.isSeasonPremiere) {
+    seasonSmall = `<span class="season-badge" style="font-size:9px;background:rgba(241,196,15,0.15);color:#f1c40f;border:1px solid rgba(241,196,15,0.3)">${show.season}</span>`;
+  } else if (show.season) {
+    seasonSmall = `<span class="season-badge" style="font-size:9px">${show.season}</span>`;
+  }
+
+  const detailImg = show.image ? `<img src="${show.image}" alt="">` : "";
+  const typeHTML = show.showType ? `<span class="type-label">${show.showType}</span>` : "";
+  const epHTML = show.episodeName && show.episodeName !== show.title ? `<p class="ep-name">"${show.episodeName}"</p>` : "";
+
+  // Extra episodes "+1" badge
+  const extraCount = (show.extraEpisodes || []).length;
+  const extraBadge = extraCount > 0 ? `<span class="season-badge" style="font-size:9px;background:rgba(210,140,60,0.15);color:#d28c3c;border:1px solid rgba(210,140,60,0.3)">+${extraCount}</span>` : "";
+
+  // Extra episodes detail rows
+  const extraEpisodesHTML = extraCount > 0 ? `<div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+    ${show.extraEpisodes.map(e => `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.05)">
+      ${e.season ? `<span class="season-badge" style="font-size:9px">${e.season}</span>` : ""}
+      <span style="font-size:11px;color:rgba(255,255,255,0.4);font-family:'JetBrains Mono',monospace;flex:1">${e.episodeName || e.season || ""}</span>
+      <span style="font-size:11px;color:rgba(255,255,255,0.3);font-family:'JetBrains Mono',monospace">${fmt12h(e.time)}${e.tz ? " " + e.tz : ""}</span>
+      ${e.isPremiere ? `<span class="premiere-badge" style="background:linear-gradient(135deg,${gs.accent},${gs.accent}cc);font-size:9px">Premiere</span>` : ""}
+    </div>`).join("")}
+  </div>` : "";
+
+  // Build episode summary (always visible, no toggle)
+  const epSummaryId = `ep-${show.id.replace(/[^a-zA-Z0-9-]/g, "")}`;
+  let epSummaryHTML = "";
+  if (show.epDescription) {
+    epSummaryHTML = `<div class="summary-section open" id="${epSummaryId}">
+      <div class="summary-toggle" onclick="toggleSummary(event, '${epSummaryId}')">
+        <span class="toggle-icon">▾</span>
+        <span class="toggle-label">Episode Summary</span>
+      </div>
+      <div class="summary-body">
+        <p class="desc" style="color:rgba(255,255,255,0.5);margin-top:4px">${show.epDescription}${show.epDescription.length >= 300 ? "…" : ""}</p>
+      </div>
+    </div>`;
+  }
+
+  // Build show summary (collapsible — open by default for S1, closed otherwise)
+  const showSummaryId = `ss-${show.id.replace(/[^a-zA-Z0-9-]/g, "")}`;
+  let showSummaryHTML = "";
+  if (show.showDescription) {
+    const openClass = show.isSeason1 ? " open" : "";
+    showSummaryHTML = `<div class="summary-section${openClass}" id="${showSummaryId}">
+      <div class="summary-toggle" onclick="toggleSummary(event, '${showSummaryId}')">
+        <span class="toggle-icon">▾</span>
+        <span class="toggle-label">Show Summary</span>
+      </div>
+      <div class="summary-body">
+        <p class="desc" style="margin-top:4px">${show.showDescription}${show.showDescription.length >= 500 ? "…" : ""}</p>
+      </div>
+    </div>`;
+  }
+  const ratingHTML = show.rating ? `<span class="rating-tag">★ ${show.rating}</span>` : "";
+  const premiereHTML = show.isPremiere ? `<span class="premiere-badge" style="background:linear-gradient(135deg,${gs.accent},${gs.accent}cc)">Premiere</span>` : "";
+  const timeDisplay = fmt12h(show.time) + (show.tz && show.time !== "Streaming" && show.time !== "TBA" ? ` ${show.tz}` : "");
+
+  const isSearching = !!(state.searchMode || (state.mode === "calendar" && state.searchQuery));
+  const animStyle = (isSearching || state.mode === "premieres") ? "" : `animation:fadeSlideIn 0.35s ease-out both;animation-delay:${delay}ms;`;
+  return `<div class="show-row" id="${cardId}" onclick="toggleCard('${cardId}')" style="background:linear-gradient(135deg,${gs.accent}14,#181818);${animStyle}">
+    <div class="glow" style="background:radial-gradient(circle at top right,${gs.accent}10,transparent 70%)"></div>
+    <div class="summary">
+      ${thumbHTML}
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span class="title">${show.title}</span>${seasonSmall}${extraBadge}
+          <span class="chevron" style="margin-left:auto">▾</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px;overflow:hidden;min-width:0">
+          ${premiereDot}
+          <span class="genre-pip" style="color:${gs.accent};background:${gs.accent}15;flex-shrink:0">${show.genre === "Other" && show.showType ? show.showType : show.genre}</span>
+          ${(() => {
+            const s = getStreamingHome(show.network);
+            if (s) {
+              return `<span class="network-sm" style="color:${gs.accent};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex-shrink:1">${show.network}</span><span class="network-sm" style="color:rgba(255,255,255,0.3);flex-shrink:0">→</span><span class="network-sm" style="color:${gs.accent}88;flex-shrink:0;white-space:nowrap">${s}</span>`;
+            }
+            return `<span class="network-sm" style="color:${gs.accent};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">${show.network}</span>`;
+          })()}
+        </div>
+      </div>
+    </div>
+    <div class="details">
+      <div class="details-inner">
+        ${detailImg}
+        <div class="detail-info">
+          <div class="meta">
+            <span class="time">${timeDisplay}</span>
+            ${typeHTML}
+          </div>
+          ${premiereHTML}
+          ${epHTML}
+          ${showSummaryHTML}
+          ${epSummaryHTML}
+          ${extraEpisodesHTML}
+          <div class="tags">
+            <span class="genre-tag" style="color:${gs.accent};background:${gs.accent}15">${show.genre}</span>
+            ${ratingHTML}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function onSearchEnter(val) {
+  clearTimeout(searchDebounce);
+  const wrap = document.getElementById("searchWrap");
+  const query = val.trim().toLowerCase();
+  if (query.length > 0) wrap.classList.add("has-query");
+  else wrap.classList.remove("has-query");
+  state.searchQuery = query;
+
+  if (state.mode === "calendar") {
+    if (query.length > 0) {
+      const m = state.calendarMonth;
+      const year = m.getFullYear();
+      const month = m.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = new Date();
+      for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(year, month, d);
+        const dk = dateKey(date);
+        const diffDays = Math.round((date - today) / 86400000);
+        if (diffDays >= -30 && diffDays <= 30) fetchDate(dk);
+      }
+    }
+    renderCalendar();
+    render();
+    return;
+  }
+
+  if (query.length > 0 && !state.searchMode) {
+    state.searchMode = true;
+    document.body.classList.add("search-mode");
+    if (!state.prefetchTriggered) {
+      state.prefetchTriggered = true;
+      allDates.forEach(d => fetchDate(dateKey(d)));
+    }
+  } else if (query.length === 0 && state.searchMode) {
+    state.searchMode = false;
+    document.body.classList.remove("search-mode");
+  }
+  render();
+}
+
+// Search
+let searchDebounce = null;
+function onSearchInput(val) {
+  const wrap = document.getElementById("searchWrap");
+  const query = val.trim().toLowerCase();
+  if (query.length > 0) wrap.classList.add("has-query");
+  else wrap.classList.remove("has-query");
+
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(() => {
+    state.searchQuery = query.length >= 4 ? query : "";
+
+    if (state.mode === "calendar") {
+      if (query.length >= 4) {
+        const m = state.calendarMonth;
+        const year = m.getFullYear();
+        const month = m.getMonth();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+        for (let d = 1; d <= daysInMonth; d++) {
+          const date = new Date(year, month, d);
+          const dk = dateKey(date);
+          const diffDays = Math.round((date - today) / 86400000);
+          if (diffDays >= -30 && diffDays <= 30) fetchDate(dk);
+        }
+      }
+      renderCalendar();
+      render();
+      return;
+    }
+
+    // Swipe mode — existing behaviour
+    if (query.length >= 4 && !state.searchMode) {
+      state.searchMode = true;
+      document.body.classList.add("search-mode");
+      if (!state.prefetchTriggered) {
+        state.prefetchTriggered = true;
+        allDates.forEach(d => fetchDate(dateKey(d)));
+      }
+    } else if (query.length < 4 && state.searchMode) {
+      state.searchMode = false;
+      document.body.classList.remove("search-mode");
+    }
+    render();
+  }, 400);
+}
+
+function clearSearch() {
+  const input = document.getElementById("searchInput");
+  const wrap = document.getElementById("searchWrap");
+  input.value = ""; wrap.classList.remove("has-query");
+  state.searchQuery = ""; state.searchMode = false;
+  document.body.classList.remove("search-mode");
+  if (state.mode === "calendar") { renderCalendar(); }
+  render(); input.blur();
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  state.searchQuery = "";
+  state.searchMode = false;
+  document.body.classList.remove("search-mode");
+  const searchInput = document.getElementById("searchInput");
+  const searchWrap = document.getElementById("searchWrap");
+  if (searchInput) searchInput.value = "";
+  if (searchWrap) searchWrap.classList.remove("has-query");
+
+  document.getElementById("btnSwipe").classList.toggle("active", mode === "swipe");
+  document.getElementById("btnCalendar").classList.toggle("active", mode === "calendar");
+  document.getElementById("btnPremieres").classList.toggle("active", mode === "premieres");
+  document.getElementById("dateRibbon").style.display = mode === "swipe" ? "" : "none";
+  document.getElementById("premieresRibbon").style.display = mode === "premieres" ? "" : "none";
+  document.getElementById("calendarWrap").style.display = mode === "calendar" ? "" : "none";
+  document.getElementById("weekBtns").style.display = mode === "swipe" ? "" : "none";
+  document.getElementById("premieresNav").style.display = mode === "premieres" ? "" : "none";
+
+  if (mode === "swipe") {
+    // Reset to yesterday/today/tomorrow
+    state.selectedDates.clear();
+    const yest = new Date(); yest.setDate(yest.getDate() - 1);
+    const tod = new Date();
+    const tmrw = new Date(); tmrw.setDate(tmrw.getDate() + 1);
+    [yest, tod, tmrw].forEach(d => {
+      const dk = dateKey(d);
+      state.selectedDates.add(dk);
+      fetchDate(dk);
+    });
+    setTimeout(() => {
+      const btn = document.getElementById("dateTodayBtn");
+      const ribbon = document.getElementById("dateRibbon");
+      if (btn && ribbon) {
+        const left = btn.offsetLeft - ribbon.offsetWidth / 2 + btn.offsetWidth / 2;
+        ribbon.scrollTo({ left, behavior: "smooth" });
+      }
+    }, 100);
+  }
+
+  if (mode === "calendar") {
+    // Reset to current month, today selected
+    state.calendarMonth = new Date();
+    state.selectedDates.clear();
+    const dk = dateKey(new Date());
+    state.selectedDates.add(dk);
+    fetchDate(dk);
+    renderCalendar();
+  }
+
+  if (mode === "premieres") {
+    state.premieresWeekOffset = 0;
+    state.selectedDates.clear();
+    const sunday = getSundayOfWeek(0);
+    for (let i = 0; i <= 6; i++) {
+      const d = new Date(sunday); d.setDate(sunday.getDate() + i);
+      const dk = dateKey(d);
+      state.selectedDates.add(dk);
+      fetchDate(dk);
+    }
+    renderPremieresRibbon();
+  }
+
+  render();
+}
+
+function renderCalendar() {
+  const wrap = document.getElementById("calendarWrap");
+  const m = state.calendarMonth;
+  const year = m.getFullYear();
+  const month = m.getMonth();
+  const monthName = m.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+  const todayDk = dateKey(today);
+
+  // ±3 month boundary check
+  const todayMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const monthDiff = (year - todayMonth.getFullYear()) * 12 + (month - todayMonth.getMonth());
+  const atPastLimit = monthDiff <= -3;
+  const atFutureLimit = monthDiff >= 3;
+
+  // Fetch all days in the visible month
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    fetchDate(dateKey(date));
+  }
+
+  let cells = "";
+  for (let i = 0; i < firstDay; i++) {
+    cells += `<div class="calendar-day empty"></div>`;
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(year, month, d);
+    const dk = dateKey(date);
+    const isToday = dk === todayDk;
+    const isPast = date < today && !isToday;
+    const isSelected = state.selectedDates.has(dk);
+
+    const shows = state.showsByDate[dk] || [];
+    const hasSearchMatch = state.searchQuery
+      ? shows.some(s => s.title.toLowerCase().includes(state.searchQuery))
+      : false;
+
+    let dots = "";
+    if (state.searchQuery && hasSearchMatch) {
+      dots += `<div class="pdot" style="background:#d28c3c;box-shadow:0 0 4px rgba(210,140,60,0.6)"></div>`;
+    }
+
+    const searchHighlight = state.searchQuery && hasSearchMatch ? "border-color:rgba(210,140,60,0.5);background:rgba(210,140,60,0.08);" : "";
+    const classes = ["calendar-day", isToday ? "today" : "", isSelected ? "selected" : "", isPast ? "past" : ""].filter(Boolean).join(" ");
+
+    cells += `<div class="${classes}" onclick="calendarSelectDay('${dk}')" style="${searchHighlight}">
+      <span class="pday-num">${d}</span>
+      <div class="pday-dots">${dots}</div>
+    </div>`;
+  }
+
+  wrap.innerHTML = `<div class="calendar-header">
+    <span class="calendar-month-label">${monthName}</span>
+    <div class="calendar-nav">
+      <button onclick="calendarPrevMonth()" ${atPastLimit ? "disabled" : ""}>‹</button>
+      <button onclick="calendarNextMonth()" ${atFutureLimit ? "disabled" : ""}>›</button>
+    </div>
+  </div>
+  <div class="calendar-weekdays">
+    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+  </div>
+  <div class="calendar-grid">${cells}</div>`;
+}
+
+function calendarSelectDay(dk) {
+  state.selectedDates.clear();
+  state.selectedDates.add(dk);
+  fetchDate(dk);
+  renderCalendar();
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function calendarPrevMonth() {
+  state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() - 1, 1);
+  renderCalendar();
+}
+
+function calendarNextMonth() {
+  state.calendarMonth = new Date(state.calendarMonth.getFullYear(), state.calendarMonth.getMonth() + 1, 1);
+  renderCalendar();
+}
+
+// Render
+function render() {
+  if (state.mode === "calendar") renderCalendar();
+  // Country picker
+  const countryOptions = [
+    { code: "ALL", label: "ALL" },
+    { code: "US", label: "🇺🇸 US" },
+    { code: "GB", label: "🇬🇧 UK" },
+    { code: "CA", label: "🇨🇦 CA" },
+    { code: "AU", label: "🇦🇺 AU" },
+  ];
+  const allSelected = state.countries.size === ALL_COUNTRIES.length;
+  document.getElementById("countryBar").innerHTML = countryOptions.map(c => {
+    const active = c.code === "ALL" ? allSelected : state.countries.has(c.code);
+    return `<button class="country-btn${active ? " active" : ""}" onclick="toggleCountry('${c.code}')">${c.label}</button>`;
+  }).join("");
+
+  const activeDates = state.mode === "calendar" && state.searchQuery
+    ? (() => {
+        const m = state.calendarMonth;
+        const year = m.getFullYear();
+        const month = m.getMonth();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+        const dates = [];
+        for (let d = 1; d <= daysInMonth; d++) {
+          const date = new Date(year, month, d);
+          const dk = dateKey(date);
+          const diffDays = Math.round((date - today) / 86400000);
+          if (diffDays >= -30 && diffDays <= 30) dates.push(dk);
+        }
+        return dates.sort();
+      })()
+    : state.searchMode
+      ? allDates.map(d => dateKey(d)).sort()
+      : [...state.selectedDates].sort();
+
+  const allShows = activeDates.flatMap(d => state.showsByDate[d] || []);
+  const anyLoading = activeDates.some(d => state.loadingDates.has(d));
+
+  const searchFiltered = state.searchQuery
+    ? allShows.filter(s => s.title.toLowerCase().includes(state.searchQuery))
+    : allShows;
+
+  const premiereFiltered = state.mode === "premieres"
+    ? searchFiltered.filter(s => s.isPremiere)
+    : searchFiltered;
+
+  if (state.searchMode) {
+    document.getElementById("searchMatchCount").textContent = searchFiltered.length;
+  }
+
+  // Date ribbon
+  const ribbon = document.getElementById("dateRibbon");
+  ribbon.innerHTML = allDates.map(d => {
+    const dk = dateKey(d);
+    const selected = state.selectedDates.has(dk);
+    const today = isToday(dk);
+    const loading = state.loadingDates.has(dk);
+    const count = (state.showsByDate[dk] || []).length;
+    const hasData = !!state.showsByDate[dk];
+    const past = isPast(dk);
+
+    let label = d.toLocaleDateString("en-US", { weekday: "short" });
+    if (today) label = "Today";
+    else if (isYesterday(dk)) label = "Yest";
+    else if (isTomorrow(dk)) label = "Tmrw";
+
+    const classes = ["date-btn", today ? "today" : "", selected ? "selected" : "", past ? "past" : ""].filter(Boolean).join(" ");
+    const loadingDot = selected && loading ? `<div class="loading-dot"></div>` : "";
+    const countHTML = selected && hasData && !loading ? `<span class="count">${count}</span>` : "";
+
+    return `<button class="${classes}" onclick="toggleDate('${dk}')" ${today ? 'id="dateTodayBtn"' : ""}>
+      <span class="day-label">${label}</span>
+      <span class="day-num">${d.getDate()}</span>
+      <span class="day-month">${d.toLocaleDateString("en-US",{month:"short"})}</span>
+      ${loadingDot}${countHTML}
+    </button>`;
+  }).join("");
+
+  // Collect genres and networks
+  const genres = ["All", ...new Set(premiereFiltered.map(s => s.genre).filter(Boolean))].sort((a,b) => a === "All" ? -1 : b === "All" ? 1 : a.localeCompare(b));
+  const networks = ["All", ...new Set(premiereFiltered.map(s => s.network).filter(Boolean))].sort((a,b) => a === "All" ? -1 : b === "All" ? 1 : a.localeCompare(b));
+
+  if (searchFiltered.length === 0 && anyLoading) {
+    document.getElementById("filtersArea").innerHTML = "";
+    document.getElementById("content").innerHTML = `<div class="loading-state"><div class="loading-dots"><span></span><span></span><span></span></div><p class="loading-text">Loading schedule...</p></div>`;
+    return;
+  }
+
+  if (searchFiltered.length === 0 && !anyLoading) {
+    document.getElementById("filtersArea").innerHTML = "";
+    if (state.searchMode && state.searchQuery) {
+      document.getElementById("content").innerHTML = `<div style="text-align:center;padding:60px 20px">
+        <p style="color:rgba(255,255,255,0.3);font-size:13px;font-family:'JetBrains Mono',monospace">No shows matching "${state.searchQuery.replace(/</g,'&lt;')}"</p>
+        <p style="color:rgba(255,255,255,0.15);font-size:11px;font-family:'JetBrains Mono',monospace;margin-top:8px">across the next two weeks</p>
+      </div>`;
+    } else {
+      document.getElementById("content").innerHTML = "";
+    }
+    return;
+  }
+
+  // Filters
+  if (state.searchMode) {
+    document.getElementById("filtersArea").innerHTML = "";
+  } else {
+    const genreOpts = genres.map(g => `<option value="${g}" ${state.genreFilter === g ? "selected" : ""}>${g}</option>`).join("");
+    const netOpts = networks.map(n => `<option value="${n}" ${state.sourceFilter === n ? "selected" : ""}>${n}</option>`).join("");
+    document.getElementById("filtersArea").innerHTML = `<div class="filters">
+      <div class="filter-group"><label>Genre</label><select onchange="setGenreFilter(this.value)">${genreOpts}</select></div>
+      <div class="filter-group"><label>Network</label><select onchange="setSourceFilter(this.value)">${netOpts}</select></div>
+    </div>`;
+  }
+
+  // Show sections grouped by date
+  const SEARCH_CAP = 30;
+  let totalRendered = 0;
+  let cappedHTML = "";
+  let contentHTML = "";
+  activeDates.forEach(dk => {
+    if ((state.searchMode || (state.mode === "calendar" && state.searchQuery)) && totalRendered >= SEARCH_CAP) return;
+    let shows = (state.showsByDate[dk] || []);
+    if (state.searchQuery) {
+      shows = shows.filter(s => s.title.toLowerCase().includes(state.searchQuery));
+    }
+    if (state.mode === "premieres") {
+      shows = shows.filter(s => s.isPremiere);
+    }
+    if (!state.searchMode && !(state.mode === "calendar" && state.searchQuery)) {
+      shows = shows.filter(s => state.genreFilter === "All" || s.genre === state.genreFilter)
+                    .filter(s => state.sourceFilter === "All" || s.network === state.sourceFilter);
+    }
+    if (state.searchMode || (state.mode === "calendar" && state.searchQuery)) {
+      const remaining = SEARCH_CAP - totalRendered;
+      shows = shows.slice(0, remaining);
+      totalRendered += shows.length;
+    }
+
+    const d = new Date(dk + "T12:00:00");
+    const loading = state.loadingDates.has(dk);
+    if (shows.length === 0 && !loading) return;
+
+    let label = fmtDate(d);
+    let todayClass = "";
+    if (isToday(dk)) { label = "Today"; todayClass = " today"; }
+    else if (isYesterday(dk)) label = "Yesterday";
+    else if (isTomorrow(dk)) label = "Tomorrow";
+
+    const premiereCount = shows.filter(s => s.isPremiere).length;
+    const premiereLabel = premiereCount > 0 ? ` · <span style="color:#d28c3c">${premiereCount} premiere${premiereCount !== 1 ? "s" : ""}</span>` : "";
+
+    contentHTML += `<div class="date-section">
+      <div class="date-header">
+        <h2 class="${todayClass}">${label}</h2>
+        <div class="line"></div>
+        <span class="count">${shows.length} show${shows.length !== 1 ? "s" : ""}${premiereLabel}</span>
+      </div>`;
+
+    if (loading && shows.length === 0) {
+      contentHTML += `<div class="mini-loading"><span></span><span></span><span></span></div>`;
+    }
+
+    const talkShows = state.mode === "premieres" ? [] : shows.filter(s => s.showType === "Talk Show");
+    const gameShows = state.mode === "premieres" ? [] : shows.filter(s => s.showType === "Game Show");
+    const regularShows = state.mode === "premieres" ? shows : shows.filter(s => s.showType !== "Talk Show" && s.showType !== "Game Show");
+    const talkGroupId = `talkgroup-${dk}`;
+    const gameGroupId = `gamegroup-${dk}`;
+
+    let showListHTML = `<div class="show-list">${regularShows.map((s, i) => showCardHTML(s, i)).join("")}</div>`;
+
+    if (gameShows.length > 0) {
+      showListHTML += `<div class="talkshow-group" id="${gameGroupId}">
+        <div class="talkshow-toggle" onclick="toggleTalkShows('${gameGroupId}')">
+          <span class="talkshow-toggle-label">🎮 Game Shows</span>
+          <span class="talkshow-toggle-count">${gameShows.length} show${gameShows.length !== 1 ? "s" : ""}</span>
+          <span class="talkshow-toggle-chevron">▾</span>
+        </div>
+        <div class="talkshow-list">${gameShows.map((s, i) => showCardHTML(s, i)).join("")}</div>
+      </div>`;
+    }
+
+    if (talkShows.length > 0) {
+      showListHTML += `<div class="talkshow-group" id="${talkGroupId}">
+        <div class="talkshow-toggle" onclick="toggleTalkShows('${talkGroupId}')">
+          <span class="talkshow-toggle-label">📺 Talk Shows</span>
+          <span class="talkshow-toggle-count">${talkShows.length} show${talkShows.length !== 1 ? "s" : ""}</span>
+          <span class="talkshow-toggle-chevron">▾</span>
+        </div>
+        <div class="talkshow-list">${talkShows.map((s, i) => showCardHTML(s, i)).join("")}</div>
+      </div>`;
+    }
+
+    contentHTML += showListHTML + `</div>`;
+  });
+
+  if ((state.searchMode || (state.mode === "calendar" && state.searchQuery)) && totalRendered >= SEARCH_CAP) {
+    contentHTML += `<div style="text-align:center;padding:20px;font-size:11px;color:rgba(255,255,255,0.2);font-family:'JetBrains Mono',monospace">Showing top ${SEARCH_CAP} results — refine your search</div>`;
+  }
+
+  const contentEl = document.getElementById("content");
+  if (contentEl._lastHTML !== contentHTML) {
+    contentEl._lastHTML = contentHTML;
+    contentEl.innerHTML = contentHTML;
+  }
+}
+
+function setGenreFilter(g) { state.genreFilter = g; render(); }
+function setSourceFilter(n) { state.sourceFilter = n; render(); }
+
+function getCurrentOffset() {
+  const today = dateKey(new Date());
+  const sorted = [...state.selectedDates].sort();
+  if (sorted.length === 0) return 0;
+  // Use the middle/first selected date as reference
+  const ref = sorted[Math.floor(sorted.length / 2)];
+  const refDate = new Date(ref + "T12:00:00");
+  const todayDate = new Date(today + "T12:00:00");
+  return Math.round((refDate - todayDate) / 86400000);
+}
+
+function getSundayOfWeek(offsetWeeks) {
+  const today = new Date();
+  const day = today.getDay(); // 0=Sun
+  const sunday = new Date(today);
+  sunday.setDate(today.getDate() - day + offsetWeeks * 7);
+  sunday.setHours(0,0,0,0);
+  return sunday;
+}
+
+function renderPremieresRibbon() {
+  const ribbon = document.getElementById("premieresRibbon");
+  if (!ribbon) return;
+  const currentOffset = state.premieresWeekOffset;
+  let html = "";
+  for (let w = -6; w <= 6; w++) {
+    const sunday = getSundayOfWeek(w);
+    const label = w === 0 ? "This Week" : w === -1 ? "Last Week" : w === 1 ? "Next Week" : w < 0 ? `${Math.abs(w)}w ago` : `In ${w}w`;
+    const dateStr = sunday.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    const isSelected = w === currentOffset;
+    const isCurrent = w === 0;
+    const classes = ["week-pill", isCurrent ? "current" : "", isSelected ? "selected" : ""].filter(Boolean).join(" ");
+
+    // Count premieres for this week
+    let premiereCount = 0;
+    for (let i = 0; i <= 6; i++) {
+      const d = new Date(sunday); d.setDate(sunday.getDate() + i);
+      const dk = dateKey(d);
+      const shows = state.showsByDate[dk] || [];
+      premiereCount += shows.filter(s => s.isPremiere).length;
+    }
+    const countHTML = premiereCount > 0
+      ? `<span class="pill-count">${premiereCount} new</span>`
+      : `<span class="pill-count" style="opacity:0">0</span>`;
+
+    html += `<div class="${classes}" onclick="selectPremiereWeek(${w})">
+      <span class="pill-label">${label}</span>
+      <span class="pill-num">${sunday.getDate()}</span>
+      <span class="pill-month">${sunday.toLocaleDateString("en-US", { month: "short" })}</span>
+      ${countHTML}
+    </div>`;
+  }
+  ribbon.innerHTML = html;
+  // Scroll selected into view — use longer timeout for mobile rendering
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const selected = ribbon.querySelector(".selected");
+      if (selected && ribbon) {
+        const left = selected.offsetLeft - ribbon.offsetWidth / 2 + selected.offsetWidth / 2;
+        ribbon.scrollLeft = left;
+      }
+    });
+  });
+}
+
+function selectPremiereWeek(w) {
+  state.premieresWeekOffset = w;
+  state.selectedDates.clear();
+  const sunday = getSundayOfWeek(state.premieresWeekOffset);
+  for (let i = 0; i <= 6; i++) {
+    const d = new Date(sunday); d.setDate(sunday.getDate() + i);
+    const dk = dateKey(d);
+    state.selectedDates.add(dk);
+    fetchDate(dk);
+  }
+  renderPremieresRibbon();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  render();
+}
+
+function navPremiereWeek(direction) {
+  if (direction === 0) {
+    state.premieresWeekOffset = 0;
+  } else {
+    state.premieresWeekOffset += direction;
+  }
+  state.selectedDates.clear();
+  const sunday = getSundayOfWeek(state.premieresWeekOffset);
+  for (let i = 0; i <= 6; i++) {
+    const d = new Date(sunday); d.setDate(sunday.getDate() + i);
+    const dk = dateKey(d);
+    state.selectedDates.add(dk);
+    fetchDate(dk);
+  }
+  renderPremieresRibbon();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  render();
+}
+
+function navPrev() {
+  const offset = getCurrentOffset();
+  selectSingleDate(offset - 1);
+}
+
+function navNext() {
+  const offset = getCurrentOffset();
+  selectSingleDate(offset + 1);
+}
+
+const ALL_COUNTRIES = ["US", "GB", "CA", "AU"];
+
+function toggleCountry(code) {
+  if (code === "ALL") {
+    if (state.countries.size === ALL_COUNTRIES.length) return; // already all selected
+    state.countries.clear();
+    ALL_COUNTRIES.forEach(c => state.countries.add(c));
+  } else {
+    if (state.countries.has(code) && state.countries.size === 1) return; // already the only one selected
+    state.countries.clear();
+    state.countries.add(code);
+  }
+  // Clear ALL cached data so it re-fetches cleanly
+  state.showsByDate = {};
+  state.fetchedDates.clear();
+  state.loadingDates.clear();
+  state.prefetchTriggered = false;
+  state.genreFilter = "All";
+  state.sourceFilter = "All";
+  // Re-fetch all currently selected dates
+  state.selectedDates.forEach(dk => fetchDate(dk));
+  render();
+}
+
+// Init
+const yest = new Date(); yest.setDate(yest.getDate() - 1);
+const tmrw = new Date(); tmrw.setDate(tmrw.getDate() + 1);
+state.selectedDates.add(dateKey(yest));
+state.selectedDates.add(dateKey(new Date()));
+state.selectedDates.add(dateKey(tmrw));
+render();
+fetchDate(dateKey(yest));
+fetchDate(dateKey(new Date()));
+fetchDate(dateKey(tmrw));
+
+// Scroll to today
+setTimeout(() => {
+  const btn = document.getElementById("dateTodayBtn");
+  const ribbon = document.getElementById("dateRibbon");
+  if (btn && ribbon) {
+    const left = btn.offsetLeft - ribbon.offsetWidth / 2 + btn.offsetWidth / 2;
+    ribbon.scrollTo({ left, behavior: "smooth" });
+  }
+}, 200);
+// Debug mode — tap logo 5 times
+let _debugTapCount = 0;
+let _debugTapTimer = null;
+function handleLogTap() {
+  _debugTapCount++;
+  clearTimeout(_debugTapTimer);
+  _debugTapTimer = setTimeout(() => { _debugTapCount = 0; }, 2000);
+  if (_debugTapCount >= 5) {
+    _debugTapCount = 0;
+    state.debugMode = !state.debugMode;
+    // Clear cache so data re-fetches with new filter state
+    state.showsByDate = {};
+    state.fetchedDates.clear();
+    state.loadingDates.clear();
+    updateDebugBanner();
+    state.selectedDates.forEach(dk => fetchDate(dk));
+    render();
+  }
+}
+
+function updateDebugBanner() {
+  let banner = document.getElementById("debugBanner");
+  if (state.debugMode) {
+    if (!banner) {
+      banner = document.createElement("div");
+      banner.id = "debugBanner";
+      banner.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(231,76,60,0.9);color:#fff;font-size:11px;font-family:'JetBrains Mono',monospace;text-align:center;padding:4px;letter-spacing:1px;backdrop-filter:blur(4px)";
+      banner.textContent = "⚠ DEBUG MODE — ALL FILTERS DISABLED — tap 🥔 5x to exit";
+      document.body.prepend(banner);
+    }
+  } else {
+    if (banner) banner.remove();
+  }
+}
+</script>
+</body>
+</html>

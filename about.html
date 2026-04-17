@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0a">
+<title>About — TaterTV</title>
+<meta name="description" content="TaterTV is a TV guide covering everything new airing in English — no algorithms, no accounts, no opinions.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tatertv.app/about">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+  body {
+    min-height: 100vh;
+    background: #0a0a0a;
+    color: #f0f0f0;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .ambient-orb1 { position: absolute; top: -18%; left: -8%; width: 550px; height: 550px; background: radial-gradient(circle, rgba(210,140,60,0.04), transparent 70%); filter: blur(90px); }
+  .ambient-orb2 { position: absolute; bottom: -18%; right: -8%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(180,90,40,0.03), transparent 70%); filter: blur(90px); }
+  .ambient-scan { position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.005) 2px, rgba(255,255,255,0.005) 4px); }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 720px; margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  .site-header {
+    padding: 32px 0 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .back-link {
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    color: rgba(210,140,60,0.6); text-decoration: none;
+    letter-spacing: 0.5px; transition: color 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .back-link:hover { color: #d28c3c; }
+  .header-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 900;
+    background: linear-gradient(135deg, #f5e6d0, #d28c3c);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; font-weight: 700;
+    color: #f0f0f0; margin-bottom: 8px;
+  }
+  .page-subtitle {
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    color: rgba(255,255,255,0.3); margin-bottom: 48px;
+    letter-spacing: 0.5px;
+  }
+
+  .summary-box {
+    background: rgba(210,140,60,0.05);
+    border: 1px solid rgba(210,140,60,0.15);
+    border-radius: 12px; padding: 20px 24px;
+    margin-bottom: 48px;
+  }
+  .summary-box p {
+    font-size: 13px; color: rgba(255,255,255,0.5);
+    margin: 0; line-height: 1.7;
+  }
+  .summary-box p + p { margin-top: 10px; }
+  .summary-box strong { color: rgba(255,255,255,0.75); font-weight: 600; }
+
+  .about-body h2 {
+    font-size: 13px; font-weight: 700;
+    color: #d28c3c;
+    text-transform: uppercase; letter-spacing: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 40px 0 14px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .about-body h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+  .about-body p {
+    font-size: 14px; line-height: 1.75;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 14px;
+  }
+
+  .about-body a {
+    color: rgba(210,140,60,0.8); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .about-body a:hover { color: #d28c3c; }
+
+  .not-list {
+    margin: 0 0 14px 0;
+    padding: 0;
+    list-style: none;
+  }
+  .not-list li {
+    font-size: 14px; line-height: 1.75;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+    padding-left: 24px;
+    position: relative;
+  }
+  .not-list li::before {
+    content: '✕';
+    position: absolute; left: 0;
+    font-size: 11px;
+    color: rgba(210,140,60,0.4);
+    font-family: 'JetBrains Mono', monospace;
+    top: 3px;
+  }
+  .not-list li strong {
+    color: rgba(255,255,255,0.7);
+    font-weight: 600;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .feature-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .feature-card-label {
+    font-size: 10px; font-family: 'JetBrains Mono', monospace;
+    color: #d28c3c; text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 6px;
+  }
+  .feature-card-desc {
+    font-size: 13px; line-height: 1.6;
+    color: rgba(255,255,255,0.45);
+    margin: 0;
+  }
+
+  .site-footer {
+    margin-top: 64px; padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+  }
+  .site-footer p {
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    color: rgba(255,255,255,0.4); margin-bottom: 6px;
+  }
+  .site-footer a {
+    color: rgba(210,140,60,0.7); text-decoration: none;
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    transition: color 0.2s;
+  }
+  .site-footer a:hover { color: #d28c3c; }
+
+  @media (max-width: 480px) {
+    .page-title { font-size: 26px; }
+    .container { padding: 0 16px 60px; }
+    .feature-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient">
+  <div class="ambient-orb1"></div>
+  <div class="ambient-orb2"></div>
+  <div class="ambient-scan"></div>
+</div>
+
+<div class="container">
+
+  <header class="site-header">
+    <a href="/" class="back-link">← Back to TaterTV</a>
+    <div class="header-brand">TaterTV</div>
+  </header>
+
+  <h1 class="page-title">About TaterTV</h1>
+  <p class="page-subtitle">TV guide, schedule &amp; calendar</p>
+
+  <div class="summary-box">
+    <p><strong>We don't have opinions about what you should watch.</strong> TaterTV is a neutral, complete view of everything new airing in English — across every major network and streaming service — presented without an agenda.</p>
+    <p>Open it once a day, see what's on, move on with your life.</p>
+  </div>
+
+  <div class="about-body">
+
+    <h2>What TaterTV is</h2>
+    <p>TaterTV is a TV guide for the streaming era. Broadcast, cable, and streaming have fragmented into dozens of services, each with its own schedule and its own app. TaterTV consolidates all of it into one fast, straightforward interface.</p>
+    <p>The focus is on what's <em>new</em> — new episodes, series premieres, and first airings in English. No reruns, no deep catalog rabbit holes, no content we think you might enjoy based on your history. Just what's actually on, right now and this week, across the US, UK, Canada, and Australia.</p>
+
+    <h2>What TaterTV is not</h2>
+    <p>Most TV sites are built to keep you on them as long as possible. TaterTV is built to get you off it as fast as possible.</p>
+    <ul class="not-list">
+      <li><strong>Not a recommendation engine.</strong> No algorithm deciding what you'd probably like. We show everything new, equally.</li>
+      <li><strong>Not a tracking app.</strong> No watchlists, no ratings, no "mark as watched." Those tools are useful — they're just not what this is.</li>
+      <li><strong>Not a social network.</strong> No reviews, no community, no profiles. Just the schedule.</li>
+      <li><strong>Not opinionated.</strong> We don't surface staff picks or editorialize about what's worth your time. That's your call.</li>
+      <li><strong>Not complicated.</strong> No account required. No onboarding. Open it and it works.</li>
+    </ul>
+
+    <h2>What's included</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-card-label">TV Guide</div>
+        <p class="feature-card-desc">Daily schedules across every major network and streaming service.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-label">Premieres</div>
+        <p class="feature-card-desc">Series premieres and new episode debuts, tracked before they air.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-label">Calendar View</div>
+        <p class="feature-card-desc">See what's coming up across any date range at a glance.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-label">Multi-Country</div>
+        <p class="feature-card-desc">Schedules for the US, UK, Canada, and Australia.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-label">Genre &amp; Network Filters</div>
+        <p class="feature-card-desc">Narrow down by genre or network — nothing more, nothing less.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-card-label">No Account Needed</div>
+        <p class="feature-card-desc">Free, fast, and ready the moment you open it.</p>
+      </div>
+    </div>
+
+    <h2>Who makes TaterTV?</h2>
+    <p>TaterTV is built and operated by TaterTV LLC, an independent software company. TV data is sourced from <a href="https://www.tvmaze.com" target="_blank" rel="noopener">TVMaze</a>.</p>
+
+    <h2>Contact</h2>
+    <p>For questions, partnership inquiries, or feedback, reach out at <a href="mailto:info@tatertv.app">info@tatertv.app</a>. We read everything.</p>
+
+  </div>
+
+  <footer class="site-footer">
+    <p><a href="/">← Back to TaterTV</a></p>
+    <p style="margin-top: 12px;">© TaterTV LLC · <a href="mailto:info@tatertv.app">info@tatertv.app</a></p>
+  </footer>
+
+</div>
+</body>
+</html>

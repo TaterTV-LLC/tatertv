@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0a">
+<title>Affiliate Disclosure — TaterTV</title>
+<meta name="description" content="Affiliate disclosure for TaterTV. We may earn commissions from links to third-party products and services.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tatertv.app/disclosure">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;600&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+  body {
+    min-height: 100vh;
+    background: #0a0a0a;
+    color: #f0f0f0;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .ambient-orb1 { position: absolute; top: -18%; left: -8%; width: 550px; height: 550px; background: radial-gradient(circle, rgba(210,140,60,0.04), transparent 70%); filter: blur(90px); }
+  .ambient-orb2 { position: absolute; bottom: -18%; right: -8%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(180,90,40,0.03), transparent 70%); filter: blur(90px); }
+  .ambient-scan { position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.005) 2px, rgba(255,255,255,0.005) 4px); }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 720px; margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  .site-header {
+    padding: 32px 0 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .back-link {
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    color: rgba(210,140,60,0.6); text-decoration: none;
+    letter-spacing: 0.5px; transition: color 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .back-link:hover { color: #d28c3c; }
+  .header-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 900;
+    background: linear-gradient(135deg, #f5e6d0, #d28c3c);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; font-weight: 700;
+    color: #f0f0f0; margin-bottom: 8px;
+  }
+  .page-date {
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    color: rgba(255,255,255,0.3); margin-bottom: 48px;
+    letter-spacing: 0.5px;
+  }
+
+  .summary-box {
+    background: rgba(210,140,60,0.05);
+    border: 1px solid rgba(210,140,60,0.15);
+    border-radius: 12px; padding: 20px 24px;
+    margin-bottom: 48px;
+  }
+  .summary-box p {
+    font-size: 13px; color: rgba(255,255,255,0.5);
+    margin: 0; line-height: 1.7;
+  }
+  .summary-box strong { color: rgba(255,255,255,0.75); font-weight: 600; }
+
+  .policy-body h2 {
+    font-size: 13px; font-weight: 700;
+    color: #d28c3c;
+    text-transform: uppercase; letter-spacing: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 40px 0 14px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .policy-body h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+  .policy-body p {
+    font-size: 14px; line-height: 1.75;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 14px;
+  }
+
+  .policy-body ul {
+    margin: 0 0 14px 0; padding-left: 20px;
+  }
+  .policy-body ul li {
+    font-size: 14px; line-height: 1.75;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 6px;
+  }
+  .policy-body ul li strong {
+    color: rgba(255,255,255,0.75); font-weight: 600;
+  }
+
+  .policy-body a {
+    color: rgba(210,140,60,0.8); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .policy-body a:hover { color: #d28c3c; }
+
+  .site-footer {
+    margin-top: 64px; padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+  }
+  .site-footer p {
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    color: rgba(255,255,255,0.4); margin-bottom: 6px;
+  }
+  .site-footer a {
+    color: rgba(210,140,60,0.7); text-decoration: none;
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    transition: color 0.2s;
+  }
+  .site-footer a:hover { color: #d28c3c; }
+
+  @media (max-width: 480px) {
+    .page-title { font-size: 26px; }
+    .container { padding: 0 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient">
+  <div class="ambient-orb1"></div>
+  <div class="ambient-orb2"></div>
+  <div class="ambient-scan"></div>
+</div>
+
+<div class="container">
+
+  <header class="site-header">
+    <a href="/" class="back-link">← Back to TaterTV</a>
+    <div class="header-brand">TaterTV</div>
+  </header>
+
+  <h1 class="page-title">Affiliate Disclosure</h1>
+  <p class="page-date">Last updated: April 16, 2026</p>
+
+  <div class="summary-box">
+    <p><strong>The short version:</strong> TaterTV may earn a commission if you click certain links and make a purchase. It costs you nothing extra, and it never affects what we show you or how we show it.</p>
+  </div>
+
+  <div class="policy-body">
+
+    <h2>How affiliate links work</h2>
+    <p>TaterTV participates in affiliate marketing programs. This means that when you click certain links on our site and make a purchase or sign up for a service, TaterTV LLC may receive a commission from the merchant — at no additional cost to you.</p>
+    <p>Affiliate commissions help support the ongoing development and operation of TaterTV as a free service.</p>
+
+    <h2>What this does not affect</h2>
+    <p>TaterTV is a neutral TV guide. Affiliate relationships have no influence over the schedule data, show listings, or any content displayed on the Service. We do not promote, feature, or prioritize content based on commercial relationships. Everything you see is sourced from TVMaze and presented without editorial bias.</p>
+    <p>We will never recommend a product or service we wouldn't stand behind regardless of whether an affiliate relationship exists.</p>
+
+    <h2>Current affiliate programs</h2>
+    <p>TaterTV may participate in affiliate programs including, but not limited to:</p>
+    <ul>
+      <li><strong>Amazon Associates</strong> — As an Amazon Associate, TaterTV LLC earns from qualifying purchases made through links to Amazon.com.</li>
+      <li><strong>Streaming service affiliate programs</strong> — We may link to streaming platforms and earn a commission for new subscriptions.</li>
+      <li><strong>VPN and software affiliate programs</strong> — We may link to VPN services or other software and earn a commission for qualifying sign-ups.</li>
+    </ul>
+    <p>This list will be updated as new affiliate relationships are established.</p>
+
+    <h2>FTC compliance</h2>
+    <p>In accordance with the Federal Trade Commission's guidelines on endorsements and testimonials, TaterTV discloses its affiliate relationships clearly and conspicuously. Affiliate links may be identified by a disclosure note near the link or by referring to this page.</p>
+
+    <h2>Questions</h2>
+    <p>If you have questions about our affiliate relationships or this disclosure, contact us at <a href="mailto:info@tatertv.app">info@tatertv.app</a>.</p>
+
+  </div>
+
+  <footer class="site-footer">
+    <p><a href="/">← Back to TaterTV</a></p>
+    <p style="margin-top: 12px;">© TaterTV LLC · <a href="mailto:info@tatertv.app">info@tatertv.app</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
