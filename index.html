@@ -1106,6 +1106,7 @@ function showCardHTML(show, index) {
 
 function setMode(mode) {
   state.mode = mode;
+  state.networkFilter = "All";
   document.getElementById("btnSwipe").classList.toggle("active", mode === "swipe");
   document.getElementById("btnCalendar").classList.toggle("active", mode === "calendar");
   document.getElementById("btnPremieres").classList.toggle("active", mode === "premieres");
