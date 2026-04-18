@@ -824,7 +824,11 @@ async function fetchDate(dk) {
   if (state.fetchedDates.has(dk)) return;
   state.fetchedDates.add(dk);
   state.loadingDates.add(dk);
-  render();
+
+  // Only show loader if fetch takes more than 150ms and there's nothing to show yet
+  const loaderTimer = setTimeout(() => {
+    if (state.loadingDates.has(dk) && !state.showsByDate[dk]) render();
+  }, 150);
 
   const results = [];
 
@@ -913,6 +917,7 @@ async function fetchDate(dk) {
     return at(a.time).localeCompare(at(b.time));
   });
 
+  clearTimeout(loaderTimer);
   state.showsByDate[dk] = grouped_shows;
   state.loadingDates.delete(dk);
   if (state.mode === "premieres") renderPremieresRibbon();
