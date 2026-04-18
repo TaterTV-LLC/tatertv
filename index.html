@@ -984,7 +984,7 @@ function showCardHTML(show, index) {
   const cardId = `card-${show.id.replace(/[^a-zA-Z0-9-]/g, "")}`;
 
   const thumbHTML = show.image
-    ? `<img src="${htmlEsc(show.image)}" alt="">`
+    ? `<img class="lazy-img" data-src="${htmlEsc(show.image)}" alt="" style="opacity:0;transition:opacity 0.3s ease">`
     : `<div class="img-placeholder" style="background:${gs.accent}15;color:${gs.accent}">▸</div>`;
   const premiereDot = "";
   let seasonSmall = "";
@@ -1549,6 +1549,7 @@ function render() {
   if (contentEl._lastHTML !== contentHTML) {
     contentEl._lastHTML = contentHTML;
     contentEl.innerHTML = contentHTML;
+    initLazyImages();
   }
 }
 
@@ -1708,6 +1709,23 @@ setTimeout(() => {
   }
 }, 200);
 // Debug mode — tap logo 5 times
+function initLazyImages() {
+  const imgs = document.querySelectorAll("img.lazy-img[data-src]");
+  if (!imgs.length) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        img.src = img.dataset.src;
+        img.removeAttribute("data-src");
+        img.onload = () => { img.style.opacity = "1"; };
+        observer.unobserve(img);
+      }
+    });
+  }, { rootMargin: "200px" });
+  imgs.forEach(img => observer.observe(img));
+}
+
 let _debugTapCount = 0;
 let _debugTapTimer = null;
 function handleLogTap() {
