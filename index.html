@@ -508,6 +508,18 @@
   .calendar-day .pdot {
     width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0;
   }
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(10px);
+    background: rgba(30,30,30,0.96); border: 1px solid rgba(210,140,60,0.25);
+    color: rgba(255,255,255,0.75); font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    padding: 9px 16px; border-radius: 20px; white-space: nowrap;
+    backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    opacity: 0; transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none; z-index: 200;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
   @media (max-width: 480px) {
     .brand-name { font-size: 24px; }
     .brand-logo { width: 46px; height: 38px; margin-top: 8px; }
@@ -577,6 +589,8 @@
     <p style="margin-top:10px"><a href="#top">↑ Back to top</a></p>
   </div>
 </div>
+
+<div id="toast" class="toast"></div>
 
 <div id="weekBtns" class="week-nav">
   <button class="nav-btn flex" onclick="navPrev()">← Prev</button>
@@ -1092,7 +1106,6 @@ function showCardHTML(show, index) {
 
 function setMode(mode) {
   state.mode = mode;
-  state.networkFilter = "All";
   document.getElementById("btnSwipe").classList.toggle("active", mode === "swipe");
   document.getElementById("btnCalendar").classList.toggle("active", mode === "calendar");
   document.getElementById("btnPremieres").classList.toggle("active", mode === "premieres");
@@ -1257,7 +1270,6 @@ function render() {
   if (networkFilterWrap && networkSelect) {
     const networks = [...new Set(allShows.map(s => s.network).filter(Boolean))].sort((a,b) => a.localeCompare(b));
     if (networks.length > 1) {
-      const currentVal = state.networkFilter;
       // Only rebuild options if networks changed
       const optKey = networks.join("|");
       if (networkSelect._lastOptKey !== optKey) {
@@ -1265,9 +1277,7 @@ function render() {
         networkSelect.innerHTML = `<option value="All">All Networks</option>` +
           networks.map(n => `<option value="${n}">${n}</option>`).join("");
       }
-      // Restore selected value (may have been reset by innerHTML)
-      networkSelect.value = networks.includes(currentVal) ? currentVal : "All";
-      if (networkSelect.value !== currentVal) state.networkFilter = "All";
+      networkSelect.value = state.networkFilter;
       networkSelect.classList.toggle("active", state.networkFilter !== "All");
       networkFilterWrap.style.display = "";
     } else {
@@ -1376,6 +1386,13 @@ function render() {
     contentHTML += showListHTML + `</div>`;
   });
 
+  if (contentHTML === "" && state.networkFilter !== "All" && !anyLoading) {
+    contentHTML = `<div style="text-align:center;padding:60px 20px">
+      <p style="color:rgba(255,255,255,0.3);font-size:13px;font-family:'JetBrains Mono',monospace">No ${htmlEsc(state.networkFilter)} shows today</p>
+      <p style="color:rgba(255,255,255,0.15);font-size:11px;font-family:'JetBrains Mono',monospace;margin-top:6px">Try another day</p>
+      <button onclick="setNetworkFilter('All')" style="margin-top:20px;padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.45);font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer;letter-spacing:0.3px">Show all networks</button>
+    </div>`;
+  }
 
   const contentEl = document.getElementById("content");
   if (contentEl._lastHTML !== contentHTML) {
@@ -1383,6 +1400,16 @@ function render() {
     contentEl.innerHTML = contentHTML;
     initLazyImages();
   }
+}
+
+let _toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById("toast");
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove("show"), 2800);
 }
 
 function setNetworkFilter(val) {
