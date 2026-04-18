@@ -1695,9 +1695,8 @@ state.selectedDates.add(dateKey(yest));
 state.selectedDates.add(dateKey(new Date()));
 state.selectedDates.add(dateKey(tmrw));
 render();
-fetchDate(dateKey(yest));
-fetchDate(dateKey(new Date()));
-fetchDate(dateKey(tmrw));
+// Prefetch all ribbon dates in background so navigation is instant
+allDates.forEach(d => fetchDate(dateKey(d)));
 
 // Scroll to today
 setTimeout(() => {
