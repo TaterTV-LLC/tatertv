@@ -960,6 +960,11 @@ function selectSingleDate(offset) {
       ribbon.scrollTo({ left, behavior: "smooth" });
     }
   }, 50);
+  // Silently prefetch adjacent days
+  const prev = new Date(); prev.setDate(prev.getDate() + offset - 1);
+  const next = new Date(); next.setDate(next.getDate() + offset + 1);
+  fetchDate(dateKey(prev));
+  fetchDate(dateKey(next));
 }
 
 function toggleCard(id) {
@@ -1333,6 +1338,12 @@ function calendarSelectDay(dk) {
   renderCalendar();
   render();
   window.scrollTo({ top: 0, behavior: "smooth" });
+  // Silently prefetch adjacent days
+  const d = new Date(dk + "T12:00:00");
+  const prev = new Date(d); prev.setDate(d.getDate() - 1);
+  const next = new Date(d); next.setDate(d.getDate() + 1);
+  fetchDate(dateKey(prev));
+  fetchDate(dateKey(next));
 }
 
 function calendarPrevMonth() {
@@ -1650,6 +1661,14 @@ function navPremiereWeek(direction) {
     state.selectedDates.add(dk);
     fetchDate(dk);
   }
+  // Silently prefetch adjacent weeks
+  [-1, 1].forEach(adj => {
+    const adjSunday = getSundayOfWeek(state.premieresWeekOffset + adj);
+    for (let i = 0; i <= 6; i++) {
+      const d = new Date(adjSunday); d.setDate(adjSunday.getDate() + i);
+      fetchDate(dateKey(d));
+    }
+  });
   renderPremieresRibbon();
   window.scrollTo({ top: 0, behavior: "smooth" });
   render();
@@ -1696,8 +1715,15 @@ state.selectedDates.add(dateKey(yest));
 state.selectedDates.add(dateKey(new Date()));
 state.selectedDates.add(dateKey(tmrw));
 render();
-// Prefetch all ribbon dates in background so navigation is instant
-allDates.forEach(d => fetchDate(dateKey(d)));
+// Fetch the 3 visible days immediately
+fetchDate(dateKey(yest));
+fetchDate(dateKey(new Date()));
+fetchDate(dateKey(tmrw));
+// Silently prefetch 2 days beyond the visible window
+const twoDaysAgo = new Date(); twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+const twoDaysAhead = new Date(); twoDaysAhead.setDate(twoDaysAhead.getDate() + 2);
+fetchDate(dateKey(twoDaysAgo));
+fetchDate(dateKey(twoDaysAhead));
 
 // Scroll to today
 setTimeout(() => {
