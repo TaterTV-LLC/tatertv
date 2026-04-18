@@ -610,6 +610,11 @@
 <script>
 const TATERTV_API = "https://api.tatertv.app";
 
+function htmlEsc(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 const state = {
   selectedDates: new Set(),
   showsByDate: {},
@@ -978,21 +983,21 @@ function showCardHTML(show, index) {
   const cardId = `card-${show.id.replace(/[^a-zA-Z0-9-]/g, "")}`;
 
   const thumbHTML = show.image
-    ? `<img src="${show.image}" alt="">`
+    ? `<img src="${htmlEsc(show.image)}" alt="">`
     : `<div class="img-placeholder" style="background:${gs.accent}15;color:${gs.accent}">▸</div>`;
   const premiereDot = "";
   let seasonSmall = "";
   if (show.isSeriesPremiere) {
-    seasonSmall = `<span class="season-badge" style="font-size:9px;background:rgba(46,204,113,0.15);color:#2ecc71;border:1px solid rgba(46,204,113,0.3)">${show.season}</span>`;
+    seasonSmall = `<span class="season-badge" style="font-size:9px;background:rgba(46,204,113,0.15);color:#2ecc71;border:1px solid rgba(46,204,113,0.3)">${htmlEsc(show.season)}</span>`;
   } else if (show.isSeasonPremiere) {
-    seasonSmall = `<span class="season-badge" style="font-size:9px;background:rgba(241,196,15,0.15);color:#f1c40f;border:1px solid rgba(241,196,15,0.3)">${show.season}</span>`;
+    seasonSmall = `<span class="season-badge" style="font-size:9px;background:rgba(241,196,15,0.15);color:#f1c40f;border:1px solid rgba(241,196,15,0.3)">${htmlEsc(show.season)}</span>`;
   } else if (show.season) {
-    seasonSmall = `<span class="season-badge" style="font-size:9px">${show.season}</span>`;
+    seasonSmall = `<span class="season-badge" style="font-size:9px">${htmlEsc(show.season)}</span>`;
   }
 
-  const detailImg = show.image ? `<img src="${show.image}" alt="">` : "";
-  const typeHTML = show.showType ? `<span class="type-label">${show.showType}</span>` : "";
-  const epHTML = show.episodeName && show.episodeName !== show.title ? `<p class="ep-name">"${show.episodeName}"</p>` : "";
+  const detailImg = show.image ? `<img src="${htmlEsc(show.image)}" alt="">` : "";
+  const typeHTML = show.showType ? `<span class="type-label">${htmlEsc(show.showType)}</span>` : "";
+  const epHTML = show.episodeName && show.episodeName !== show.title ? `<p class="ep-name">"${htmlEsc(show.episodeName)}"</p>` : "";
 
   // Extra episodes "+1" badge
   const extraCount = (show.extraEpisodes || []).length;
@@ -1001,9 +1006,9 @@ function showCardHTML(show, index) {
   // Extra episodes detail rows
   const extraEpisodesHTML = extraCount > 0 ? `<div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
     ${show.extraEpisodes.map(e => `<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.05)">
-      ${e.season ? `<span class="season-badge" style="font-size:9px">${e.season}</span>` : ""}
-      <span style="font-size:11px;color:rgba(255,255,255,0.4);font-family:'JetBrains Mono',monospace;flex:1">${e.episodeName || e.season || ""}</span>
-      <span style="font-size:11px;color:rgba(255,255,255,0.3);font-family:'JetBrains Mono',monospace">${fmt12h(e.time)}${e.tz ? " " + e.tz : ""}</span>
+      ${e.season ? `<span class="season-badge" style="font-size:9px">${htmlEsc(e.season)}</span>` : ""}
+      <span style="font-size:11px;color:rgba(255,255,255,0.4);font-family:'JetBrains Mono',monospace;flex:1">${htmlEsc(e.episodeName || e.season || "")}</span>
+      <span style="font-size:11px;color:rgba(255,255,255,0.3);font-family:'JetBrains Mono',monospace">${htmlEsc(fmt12h(e.time))}${e.tz ? " " + htmlEsc(e.tz) : ""}</span>
       ${e.isPremiere ? `<span class="premiere-badge" style="background:linear-gradient(135deg,${gs.accent},${gs.accent}cc);font-size:9px">Premiere</span>` : ""}
     </div>`).join("")}
   </div>` : "";
@@ -1018,7 +1023,7 @@ function showCardHTML(show, index) {
         <span class="toggle-label">Episode Summary</span>
       </div>
       <div class="summary-body">
-        <p class="desc" style="color:rgba(255,255,255,0.5);margin-top:4px">${show.epDescription}${show.epDescription.length >= 300 ? "…" : ""}</p>
+        <p class="desc" style="color:rgba(255,255,255,0.5);margin-top:4px">${htmlEsc(show.epDescription)}${show.epDescription.length >= 300 ? "…" : ""}</p>
       </div>
     </div>`;
   }
@@ -1034,11 +1039,11 @@ function showCardHTML(show, index) {
         <span class="toggle-label">Show Summary</span>
       </div>
       <div class="summary-body">
-        <p class="desc" style="margin-top:4px">${show.showDescription}${show.showDescription.length >= 500 ? "…" : ""}</p>
+        <p class="desc" style="margin-top:4px">${htmlEsc(show.showDescription)}${show.showDescription.length >= 500 ? "…" : ""}</p>
       </div>
     </div>`;
   }
-  const ratingHTML = show.rating ? `<span class="rating-tag">★ ${show.rating}</span>` : "";
+  const ratingHTML = show.rating ? `<span class="rating-tag">★ ${htmlEsc(show.rating)}</span>` : "";
   const premiereHTML = show.isPremiere ? `<span class="premiere-badge" style="background:linear-gradient(135deg,${gs.accent},${gs.accent}cc)">Premiere</span>` : "";
   const timeDisplay = fmt12h(show.time) + (show.tz && show.time !== "Streaming" && show.time !== "TBA" ? ` ${show.tz}` : "");
 
@@ -1050,18 +1055,18 @@ function showCardHTML(show, index) {
       ${thumbHTML}
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-          <span class="title">${show.title}</span>${seasonSmall}${extraBadge}
+          <span class="title">${htmlEsc(show.title)}</span>${seasonSmall}${extraBadge}
           <span class="chevron" style="margin-left:auto">▾</span>
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-top:4px;overflow:hidden;min-width:0">
           ${premiereDot}
-          <span class="genre-pip" style="color:${gs.accent};background:${gs.accent}15;flex-shrink:0">${show.genre === "Other" && show.showType ? show.showType : show.genre}</span>
+          <span class="genre-pip" style="color:${gs.accent};background:${gs.accent}15;flex-shrink:0">${htmlEsc(show.genre === "Other" && show.showType ? show.showType : show.genre)}</span>
           ${(() => {
             const s = getStreamingHome(show.network);
             if (s) {
-              return `<span class="network-sm" style="color:${gs.accent};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex-shrink:1">${show.network}</span><span class="network-sm" style="color:rgba(255,255,255,0.3);flex-shrink:0">→</span><span class="network-sm" style="color:${gs.accent}88;flex-shrink:0;white-space:nowrap">${s}</span>`;
+              return `<span class="network-sm" style="color:${gs.accent};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex-shrink:1">${htmlEsc(show.network)}</span><span class="network-sm" style="color:rgba(255,255,255,0.3);flex-shrink:0">→</span><span class="network-sm" style="color:${gs.accent}88;flex-shrink:0;white-space:nowrap">${s}</span>`;
             }
-            return `<span class="network-sm" style="color:${gs.accent};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">${show.network}</span>`;
+            return `<span class="network-sm" style="color:${gs.accent};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">${htmlEsc(show.network)}</span>`;
           })()}
         </div>
       </div>
@@ -1080,7 +1085,7 @@ function showCardHTML(show, index) {
           ${epSummaryHTML}
           ${extraEpisodesHTML}
           <div class="tags">
-            <span class="genre-tag" style="color:${gs.accent};background:${gs.accent}15">${show.genre}</span>
+            <span class="genre-tag" style="color:${gs.accent};background:${gs.accent}15">${htmlEsc(show.genre)}</span>
             ${ratingHTML}
           </div>
         </div>
@@ -1433,7 +1438,7 @@ function render() {
     document.getElementById("filtersArea").innerHTML = "";
     if (state.searchMode && state.searchQuery) {
       document.getElementById("content").innerHTML = `<div style="text-align:center;padding:60px 20px">
-        <p style="color:rgba(255,255,255,0.3);font-size:13px;font-family:'JetBrains Mono',monospace">No shows matching "${state.searchQuery.replace(/</g,'&lt;')}"</p>
+        <p style="color:rgba(255,255,255,0.3);font-size:13px;font-family:'JetBrains Mono',monospace">No shows matching "${htmlEsc(state.searchQuery)}"</p>
         <p style="color:rgba(255,255,255,0.15);font-size:11px;font-family:'JetBrains Mono',monospace;margin-top:8px">across the next two weeks</p>
       </div>`;
     } else {
