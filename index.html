@@ -1388,9 +1388,9 @@ function render() {
 
   if (contentHTML === "" && state.networkFilter !== "All" && !anyLoading) {
     contentHTML = `<div style="text-align:center;padding:60px 20px">
-      <p style="color:rgba(255,255,255,0.3);font-size:13px;font-family:'JetBrains Mono',monospace">No ${htmlEsc(state.networkFilter)} shows today</p>
-      <p style="color:rgba(255,255,255,0.15);font-size:11px;font-family:'JetBrains Mono',monospace;margin-top:6px">Try another day</p>
-      <button onclick="setNetworkFilter('All')" style="margin-top:20px;padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.45);font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer;letter-spacing:0.3px">Show all networks</button>
+      <p style="color:rgba(255,255,255,0.85);font-size:13px;font-family:'JetBrains Mono',monospace">No ${htmlEsc(state.networkFilter)} shows today</p>
+      <p style="color:rgba(255,255,255,0.4);font-size:11px;font-family:'JetBrains Mono',monospace;margin-top:6px">Try another day</p>
+      <button onclick="setNetworkFilter('All')" style="margin-top:20px;padding:8px 18px;border-radius:20px;border:1px solid rgba(210,140,60,0.4);background:rgba(210,140,60,0.12);color:#d28c3c;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;cursor:pointer;letter-spacing:0.3px">Show all networks</button>
     </div>`;
   }
 
