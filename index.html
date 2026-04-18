@@ -262,19 +262,7 @@
   .date-btn .count { font-size: 9px; color: #d28c3c; font-family: 'JetBrains Mono', monospace; font-weight: 700; }
   .date-btn .loading-dot { width: 4px; height: 4px; border-radius: 50%; background: #d28c3c; animation: pulse 1s infinite; position: absolute; top: 6px; right: 6px; }
 
-  /* Filters */
-  .filters { display: flex; gap: 10px; margin-bottom: 14px; }
-  .filter-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-  .filter-group label { font-size: 10px; color: rgba(255,255,255,0.25); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.5px; }
-  .filter-group select {
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.7); padding: 8px 10px; border-radius: 10px;
-    font-size: 11px; font-family: 'JetBrains Mono', monospace; cursor: pointer; outline: none;
-    width: 100%; -webkit-appearance: none; appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(255,255,255,0.3)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 10px center;
-  }
-  .filter-group select option { background: #1a1a1a; }
+
 
   /* Date sections */
   .date-section { margin-bottom: 36px; }
@@ -398,41 +386,7 @@
   .footer a:hover { color: #d28c3c; }
   .footer .footer-brand { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px; color: rgba(210,140,60,0.6); margin-bottom: 8px; }
 
-  /* Search */
-  .search-wrap { position: relative; margin-bottom: 12px; }
-  .search-wrap input {
-    width: 100%; padding: 10px 14px 10px 36px; border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.07);
-    color: #f0f0f0; font-size: 13px; font-family: 'DM Sans', sans-serif;
-    outline: none; transition: all 0.25s ease;
-  }
-  .search-wrap input::placeholder { color: rgba(255,255,255,0.35); }
-  .search-wrap input:focus { border-color: rgba(210,140,60,0.5); background: rgba(255,255,255,0.09); }
-  .search-wrap .search-icon {
-    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-    font-size: 13px; color: rgba(255,255,255,0.35); pointer-events: none;
-    transition: color 0.25s ease;
-  }
-  .search-wrap input:focus ~ .search-icon { color: rgba(210,140,60,0.6); }
-  .search-wrap .search-clear {
-    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-    background: rgba(255,255,255,0.08); border: none; color: rgba(255,255,255,0.4);
-    width: 20px; height: 20px; border-radius: 50%; font-size: 11px; cursor: pointer;
-    display: none; align-items: center; justify-content: center;
-    transition: all 0.2s ease;
-  }
-  .search-wrap .search-clear:hover { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); }
-  .search-wrap.has-query .search-clear { display: flex; }
 
-  .search-mode-badge {
-    display: none; align-items: center; gap: 6px; margin-bottom: 10px;
-    font-size: 10px; font-family: 'JetBrains Mono', monospace; color: rgba(210,140,60,0.7);
-    letter-spacing: 0.5px;
-  }
-  .search-mode-badge .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #d28c3c; animation: pulse 2s infinite; }
-  body.search-mode .search-mode-badge { display: flex; }
-  body.search-mode .date-ribbon { opacity: 0.3; pointer-events: none; }
-  body.search-mode .filters { opacity: 0.3; pointer-events: none; }
 
   /* Week nav buttons */
   .week-nav {
@@ -453,21 +407,49 @@
 
   /* Mode toggle */
   .mode-toggle {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px;
     background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 3px;
+    border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 4px;
   }
   .mode-btn {
-    padding: 5px 8px; border-radius: 7px; border: none; background: transparent;
-    color: rgba(255,255,255,0.55); font-size: 10px; font-weight: 600;
+    padding: 11px 8px; border-radius: 9px; border: none; background: transparent;
+    color: rgba(255,255,255,0.45); font-size: 11px; font-weight: 700;
     font-family: 'JetBrains Mono', monospace; cursor: pointer; transition: all 0.2s ease;
-    letter-spacing: 0.2px; white-space: nowrap; text-align: center;
+    letter-spacing: 0.3px; white-space: nowrap; text-align: center;
   }
+  .mode-btn:active { transform: scale(0.97); }
   .mode-btn.active {
     background: rgba(210,140,60,0.15); color: #d28c3c;
     border: 1px solid rgba(210,140,60,0.25);
   }
   .mode-btn.full-width { grid-column: unset; }
+
+  /* Network filter */
+  .network-filter-wrap {
+    margin-bottom: 12px; position: relative;
+  }
+  .network-select {
+    width: 100%; padding: 10px 36px 10px 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 11px;
+    color: rgba(255,255,255,0.6);
+    font-size: 12px; font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer; outline: none;
+    -webkit-appearance: none; appearance: none;
+    transition: all 0.2s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(255,255,255,0.25)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+  .network-select option { background: #1a1a1a; }
+  .network-select:focus { border-color: rgba(210,140,60,0.35); color: rgba(255,255,255,0.8); }
+  .network-select.active {
+    border-color: rgba(210,140,60,0.45);
+    background-color: rgba(210,140,60,0.07);
+    color: #d28c3c;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(210,140,60,0.7)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  }
 
   /* Planner calendar grid */
   .calendar-wrap { margin-bottom: 14px; max-width: 240px; margin-left: auto; margin-right: auto; }
@@ -577,18 +559,13 @@
     <button class="mode-btn full-width" id="btnPremieres" onclick="setMode('premieres')">Premieres</button>
   </div>
 
-  <div class="search-wrap" id="searchWrap">
-    <input type="text" id="searchInput" placeholder="Search shows across all days…" autocomplete="off" oninput="onSearchInput(this.value)" onkeydown="if(event.key==='Enter'){onSearchEnter(this.value)}" />
-    <span class="search-icon">⌕</span>
-    <button class="search-clear" onclick="clearSearch()">✕</button>
-  </div>
-  <div class="search-mode-badge" id="searchBadge">
-    <span class="badge-dot"></span>
-    <span>Searching all days — <span id="searchMatchCount">0</span> matches</span>
+  <div class="network-filter-wrap" id="networkFilterWrap" style="display:none">
+    <select class="network-select" id="networkSelect" onchange="setNetworkFilter(this.value)">
+      <option value="All">All Networks</option>
+    </select>
   </div>
 
   <div id="countryBar" style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:nowrap"></div>
-  <div id="filtersArea"></div>
   <div id="content"></div>
 
   <div class="footer">
@@ -626,11 +603,7 @@ const state = {
   showsByDate: {},
   loadingDates: new Set(),
   fetchedDates: new Set(),
-  genreFilter: "All",
-  sourceFilter: "All",
-  searchQuery: "",
-  searchMode: false,
-  prefetchTriggered: false,
+  networkFilter: "All",
   countries: new Set(["US"]),
   mode: "swipe",
   calendarMonth: new Date(),
@@ -1069,8 +1042,7 @@ function showCardHTML(show, index) {
   const premiereHTML = show.isPremiere ? `<span class="premiere-badge" style="background:linear-gradient(135deg,${gs.accent},${gs.accent}cc)">Premiere</span>` : "";
   const timeDisplay = fmt12h(show.time) + (show.tz && show.time !== "Streaming" && show.time !== "TBA" ? ` ${show.tz}` : "");
 
-  const isSearching = !!(state.searchMode || (state.mode === "calendar" && state.searchQuery));
-  const animStyle = (isSearching || state.mode === "premieres") ? "" : `animation:fadeSlideIn 0.35s ease-out both;animation-delay:${delay}ms;`;
+  const animStyle = state.mode === "premieres" ? "" : `animation:fadeSlideIn 0.35s ease-out both;animation-delay:${delay}ms;`;
   return `<div class="show-row" id="${cardId}" onclick="toggleCard('${cardId}')" style="background:linear-gradient(135deg,${gs.accent}14,#181818);${animStyle}">
     <div class="glow" style="background:radial-gradient(circle at top right,${gs.accent}10,transparent 70%)"></div>
     <div class="summary">
@@ -1116,114 +1088,11 @@ function showCardHTML(show, index) {
   </div>`;
 }
 
-function onSearchEnter(val) {
-  clearTimeout(searchDebounce);
-  const wrap = document.getElementById("searchWrap");
-  const query = val.trim().toLowerCase();
-  if (query.length > 0) wrap.classList.add("has-query");
-  else wrap.classList.remove("has-query");
-  state.searchQuery = query;
 
-  if (state.mode === "calendar") {
-    if (query.length > 0) {
-      const m = state.calendarMonth;
-      const year = m.getFullYear();
-      const month = m.getMonth();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const today = new Date();
-      for (let d = 1; d <= daysInMonth; d++) {
-        const date = new Date(year, month, d);
-        const dk = dateKey(date);
-        const diffDays = Math.round((date - today) / 86400000);
-        if (diffDays >= -30 && diffDays <= 30) fetchDate(dk);
-      }
-    }
-    renderCalendar();
-    render();
-    return;
-  }
-
-  if (query.length > 0 && !state.searchMode) {
-    state.searchMode = true;
-    document.body.classList.add("search-mode");
-    if (!state.prefetchTriggered) {
-      state.prefetchTriggered = true;
-      allDates.forEach(d => fetchDate(dateKey(d)));
-    }
-  } else if (query.length === 0 && state.searchMode) {
-    state.searchMode = false;
-    document.body.classList.remove("search-mode");
-  }
-  render();
-}
-
-// Search
-let searchDebounce = null;
-function onSearchInput(val) {
-  const wrap = document.getElementById("searchWrap");
-  const query = val.trim().toLowerCase();
-  if (query.length > 0) wrap.classList.add("has-query");
-  else wrap.classList.remove("has-query");
-
-  clearTimeout(searchDebounce);
-  searchDebounce = setTimeout(() => {
-    state.searchQuery = query.length >= 4 ? query : "";
-
-    if (state.mode === "calendar") {
-      if (query.length >= 4) {
-        const m = state.calendarMonth;
-        const year = m.getFullYear();
-        const month = m.getMonth();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const today = new Date();
-        for (let d = 1; d <= daysInMonth; d++) {
-          const date = new Date(year, month, d);
-          const dk = dateKey(date);
-          const diffDays = Math.round((date - today) / 86400000);
-          if (diffDays >= -30 && diffDays <= 30) fetchDate(dk);
-        }
-      }
-      renderCalendar();
-      render();
-      return;
-    }
-
-    // Swipe mode — existing behaviour
-    if (query.length >= 4 && !state.searchMode) {
-      state.searchMode = true;
-      document.body.classList.add("search-mode");
-      if (!state.prefetchTriggered) {
-        state.prefetchTriggered = true;
-        allDates.forEach(d => fetchDate(dateKey(d)));
-      }
-    } else if (query.length < 4 && state.searchMode) {
-      state.searchMode = false;
-      document.body.classList.remove("search-mode");
-    }
-    render();
-  }, 400);
-}
-
-function clearSearch() {
-  const input = document.getElementById("searchInput");
-  const wrap = document.getElementById("searchWrap");
-  input.value = ""; wrap.classList.remove("has-query");
-  state.searchQuery = ""; state.searchMode = false;
-  document.body.classList.remove("search-mode");
-  if (state.mode === "calendar") { renderCalendar(); }
-  render(); input.blur();
-}
 
 function setMode(mode) {
   state.mode = mode;
-  state.searchQuery = "";
-  state.searchMode = false;
-  document.body.classList.remove("search-mode");
-  const searchInput = document.getElementById("searchInput");
-  const searchWrap = document.getElementById("searchWrap");
-  if (searchInput) searchInput.value = "";
-  if (searchWrap) searchWrap.classList.remove("has-query");
-
+  state.networkFilter = "All";
   document.getElementById("btnSwipe").classList.toggle("active", mode === "swipe");
   document.getElementById("btnCalendar").classList.toggle("active", mode === "calendar");
   document.getElementById("btnPremieres").classList.toggle("active", mode === "premieres");
@@ -1310,19 +1179,13 @@ function renderCalendar() {
     const isSelected = state.selectedDates.has(dk);
 
     const shows = state.showsByDate[dk] || [];
-    const hasSearchMatch = state.searchQuery
-      ? shows.some(s => s.title.toLowerCase().includes(state.searchQuery))
-      : false;
 
     let dots = "";
-    if (state.searchQuery && hasSearchMatch) {
-      dots += `<div class="pdot" style="background:#d28c3c;box-shadow:0 0 4px rgba(210,140,60,0.6)"></div>`;
-    }
 
-    const searchHighlight = state.searchQuery && hasSearchMatch ? "border-color:rgba(210,140,60,0.5);background:rgba(210,140,60,0.08);" : "";
+    const searchHighlight = "";
     const classes = ["calendar-day", isToday ? "today" : "", isSelected ? "selected" : "", isPast ? "past" : ""].filter(Boolean).join(" ");
 
-    cells += `<div class="${classes}" onclick="calendarSelectDay('${dk}')" style="${searchHighlight}">
+    cells += `<div class="${classes}" onclick="calendarSelectDay('${dk}')">
       <span class="pday-num">${d}</span>
       <div class="pday-dots">${dots}</div>
     </div>`;
@@ -1383,42 +1246,35 @@ function render() {
     return `<button class="country-btn${active ? " active" : ""}" onclick="toggleCountry('${c.code}')">${c.label}</button>`;
   }).join("");
 
-  const activeDates = state.mode === "calendar" && state.searchQuery
-    ? (() => {
-        const m = state.calendarMonth;
-        const year = m.getFullYear();
-        const month = m.getMonth();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const today = new Date();
-        const dates = [];
-        for (let d = 1; d <= daysInMonth; d++) {
-          const date = new Date(year, month, d);
-          const dk = dateKey(date);
-          const diffDays = Math.round((date - today) / 86400000);
-          if (diffDays >= -30 && diffDays <= 30) dates.push(dk);
-        }
-        return dates.sort();
-      })()
-    : state.searchMode
-      ? allDates.map(d => dateKey(d)).sort()
-      : [...state.selectedDates].sort();
+  const activeDates = [...state.selectedDates].sort();
 
   const allShows = activeDates.flatMap(d => state.showsByDate[d] || []);
   const anyLoading = activeDates.some(d => state.loadingDates.has(d));
 
-  const searchFiltered = state.searchQuery
-    ? allShows.filter(s => s.title.toLowerCase().includes(state.searchQuery))
-    : allShows;
-
-  const premiereFiltered = state.mode === "premieres"
-    ? searchFiltered.filter(s => s.isPremiere)
-    : searchFiltered;
-
-  if (state.searchMode) {
-    document.getElementById("searchMatchCount").textContent = searchFiltered.length;
+  // Build and update network dropdown from current data
+  const networkFilterWrap = document.getElementById("networkFilterWrap");
+  const networkSelect = document.getElementById("networkSelect");
+  if (networkFilterWrap && networkSelect) {
+    const networks = [...new Set(allShows.map(s => s.network).filter(Boolean))].sort((a,b) => a.localeCompare(b));
+    if (networks.length > 1) {
+      const currentVal = state.networkFilter;
+      // Only rebuild options if networks changed
+      const optKey = networks.join("|");
+      if (networkSelect._lastOptKey !== optKey) {
+        networkSelect._lastOptKey = optKey;
+        networkSelect.innerHTML = `<option value="All">All Networks</option>` +
+          networks.map(n => `<option value="${n}">${n}</option>`).join("");
+      }
+      // Restore selected value (may have been reset by innerHTML)
+      networkSelect.value = networks.includes(currentVal) ? currentVal : "All";
+      if (networkSelect.value !== currentVal) state.networkFilter = "All";
+      networkSelect.classList.toggle("active", state.networkFilter !== "All");
+      networkFilterWrap.style.display = "";
+    } else {
+      networkFilterWrap.style.display = "none";
+      state.networkFilter = "All";
+    }
   }
-
-  // Date ribbon
   const ribbon = document.getElementById("dateRibbon");
   ribbon.innerHTML = allDates.map(d => {
     const dk = dateKey(d);
@@ -1446,64 +1302,22 @@ function render() {
     </button>`;
   }).join("");
 
-  // Collect genres and networks
-  const genres = ["All", ...new Set(premiereFiltered.map(s => s.genre).filter(Boolean))].sort((a,b) => a === "All" ? -1 : b === "All" ? 1 : a.localeCompare(b));
-  const networks = ["All", ...new Set(premiereFiltered.map(s => s.network).filter(Boolean))].sort((a,b) => a === "All" ? -1 : b === "All" ? 1 : a.localeCompare(b));
-
-  if (searchFiltered.length === 0 && anyLoading) {
-    document.getElementById("filtersArea").innerHTML = "";
+  if (allShows.length === 0 && anyLoading) {
     document.getElementById("content").innerHTML = `<div class="loading-state"><div class="loading-dots"><span>🥔</span><span>🥔</span><span>🥔</span></div><p class="loading-text">Loading schedule...</p></div>`;
     return;
   }
 
-  if (searchFiltered.length === 0 && !anyLoading) {
-    document.getElementById("filtersArea").innerHTML = "";
-    if (state.searchMode && state.searchQuery) {
-      document.getElementById("content").innerHTML = `<div style="text-align:center;padding:60px 20px">
-        <p style="color:rgba(255,255,255,0.3);font-size:13px;font-family:'JetBrains Mono',monospace">No shows matching "${htmlEsc(state.searchQuery)}"</p>
-        <p style="color:rgba(255,255,255,0.15);font-size:11px;font-family:'JetBrains Mono',monospace;margin-top:8px">across the next two weeks</p>
-      </div>`;
-    } else {
-      document.getElementById("content").innerHTML = "";
-    }
+  if (allShows.length === 0 && !anyLoading) {
+    document.getElementById("content").innerHTML = "";
     return;
   }
 
-  // Filters
-  if (state.searchMode) {
-    document.getElementById("filtersArea").innerHTML = "";
-  } else {
-    const genreOpts = genres.map(g => `<option value="${g}" ${state.genreFilter === g ? "selected" : ""}>${g}</option>`).join("");
-    const netOpts = networks.map(n => `<option value="${n}" ${state.sourceFilter === n ? "selected" : ""}>${n}</option>`).join("");
-    document.getElementById("filtersArea").innerHTML = `<div class="filters">
-      <div class="filter-group"><label>Genre</label><select onchange="setGenreFilter(this.value)">${genreOpts}</select></div>
-      <div class="filter-group"><label>Network</label><select onchange="setSourceFilter(this.value)">${netOpts}</select></div>
-    </div>`;
-  }
-
   // Show sections grouped by date
-  const SEARCH_CAP = 30;
-  let totalRendered = 0;
-  let cappedHTML = "";
   let contentHTML = "";
   activeDates.forEach(dk => {
-    if ((state.searchMode || (state.mode === "calendar" && state.searchQuery)) && totalRendered >= SEARCH_CAP) return;
     let shows = (state.showsByDate[dk] || []);
-    if (state.searchQuery) {
-      shows = shows.filter(s => s.title.toLowerCase().includes(state.searchQuery));
-    }
-    if (state.mode === "premieres") {
-      shows = shows.filter(s => s.isPremiere);
-    }
-    if (!state.searchMode && !(state.mode === "calendar" && state.searchQuery)) {
-      shows = shows.filter(s => state.genreFilter === "All" || s.genre === state.genreFilter)
-                    .filter(s => state.sourceFilter === "All" || s.network === state.sourceFilter);
-    }
-    if (state.searchMode || (state.mode === "calendar" && state.searchQuery)) {
-      const remaining = SEARCH_CAP - totalRendered;
-      shows = shows.slice(0, remaining);
-      totalRendered += shows.length;
-    }
+    if (state.mode === "premieres") shows = shows.filter(s => s.isPremiere);
+    if (state.networkFilter !== "All") shows = shows.filter(s => s.network === state.networkFilter);
 
     const d = new Date(dk + "T12:00:00");
     const loading = state.loadingDates.has(dk);
@@ -1562,9 +1376,6 @@ function render() {
     contentHTML += showListHTML + `</div>`;
   });
 
-  if ((state.searchMode || (state.mode === "calendar" && state.searchQuery)) && totalRendered >= SEARCH_CAP) {
-    contentHTML += `<div style="text-align:center;padding:20px;font-size:11px;color:rgba(255,255,255,0.2);font-family:'JetBrains Mono',monospace">Showing top ${SEARCH_CAP} results — refine your search</div>`;
-  }
 
   const contentEl = document.getElementById("content");
   if (contentEl._lastHTML !== contentHTML) {
@@ -1574,8 +1385,12 @@ function render() {
   }
 }
 
-function setGenreFilter(g) { state.genreFilter = g; render(); }
-function setSourceFilter(n) { state.sourceFilter = n; render(); }
+function setNetworkFilter(val) {
+  state.networkFilter = val;
+  const sel = document.getElementById("networkSelect");
+  if (sel) sel.classList.toggle("active", val !== "All");
+  render();
+}
 
 function getCurrentOffset() {
   const today = dateKey(new Date());
@@ -1718,9 +1533,7 @@ function toggleCountry(code) {
   state.showsByDate = {};
   state.fetchedDates.clear();
   state.loadingDates.clear();
-  state.prefetchTriggered = false;
-  state.genreFilter = "All";
-  state.sourceFilter = "All";
+  state.networkFilter = "All";
   // Re-fetch all currently selected dates
   state.selectedDates.forEach(dk => fetchDate(dk));
   render();
