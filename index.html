@@ -374,18 +374,23 @@
 
   /* Loading */
   .loading-state { text-align: center; padding: 80px 20px; }
-  .loading-dots { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; }
-  .loading-dots span { width: 10px; height: 10px; border-radius: 50%; background: #d28c3c; }
-  .loading-dots span:nth-child(1) { animation: pulse 1.2s ease-in-out 0s infinite; }
-  .loading-dots span:nth-child(2) { animation: pulse 1.2s ease-in-out 0.2s infinite; }
-  .loading-dots span:nth-child(3) { animation: pulse 1.2s ease-in-out 0.4s infinite; }
+  .loading-dots { display: flex; gap: 12px; justify-content: center; margin-bottom: 24px; }
+  .loading-dots span { font-size: 22px; animation: roll 1s ease-in-out infinite; display: inline-block; }
+  .loading-dots span:nth-child(1) { animation-delay: 0s; }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
   .loading-text { color: rgba(255,255,255,0.4); font-size: 13px; font-family: 'JetBrains Mono', monospace; }
 
-  .mini-loading { display: flex; gap: 6px; justify-content: center; padding: 40px 0; }
-  .mini-loading span { width: 6px; height: 6px; border-radius: 50%; background: #d28c3c; }
-  .mini-loading span:nth-child(1) { animation: pulse 1.2s ease-in-out 0s infinite; }
-  .mini-loading span:nth-child(2) { animation: pulse 1.2s ease-in-out 0.15s infinite; }
-  .mini-loading span:nth-child(3) { animation: pulse 1.2s ease-in-out 0.3s infinite; }
+  .mini-loading { display: flex; gap: 8px; justify-content: center; padding: 40px 0; }
+  .mini-loading span { font-size: 14px; animation: roll 1s ease-in-out infinite; display: inline-block; }
+  .mini-loading span:nth-child(1) { animation-delay: 0s; }
+  .mini-loading span:nth-child(2) { animation-delay: 0.15s; }
+  .mini-loading span:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes roll {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(180deg); }
+  }
 
   .footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06); text-align: center; }
   .footer p { color: rgba(255,255,255,0.4); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
@@ -1442,7 +1447,7 @@ function render() {
 
   if (searchFiltered.length === 0 && anyLoading) {
     document.getElementById("filtersArea").innerHTML = "";
-    document.getElementById("content").innerHTML = `<div class="loading-state"><div class="loading-dots"><span></span><span></span><span></span></div><p class="loading-text">Loading schedule...</p></div>`;
+    document.getElementById("content").innerHTML = `<div class="loading-state"><div class="loading-dots"><span>🥔</span><span>🥔</span><span>🥔</span></div><p class="loading-text">Loading schedule...</p></div>`;
     return;
   }
 
@@ -1516,7 +1521,7 @@ function render() {
       </div>`;
 
     if (loading && shows.length === 0) {
-      contentHTML += `<div class="mini-loading"><span></span><span></span><span></span></div>`;
+      contentHTML += `<div class="mini-loading"><span>🥔</span><span>🥔</span><span>🥔</span></div>`;
     }
 
     const talkShows = state.mode === "premieres" ? [] : shows.filter(s => s.showType === "Talk Show");
