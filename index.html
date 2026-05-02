@@ -1293,7 +1293,7 @@ function render() {
       if (networkSelect._lastOptKey !== optKey) {
         networkSelect._lastOptKey = optKey;
         networkSelect.innerHTML = `<option value="All">All Networks</option>` +
-          networks.map(n => `<option value="${n}">${n}</option>`).join("");
+          networks.map(n => `<option value="${htmlEsc(n)}">${htmlEsc(n)}</option>`).join("");
       }
       networkSelect.value = state.networkFilter;
       networkSelect.classList.toggle("active", state.networkFilter !== "All");
