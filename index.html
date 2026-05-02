@@ -577,7 +577,7 @@
   <div id="calendarWrap" class="calendar-wrap" style="display:none"></div>
 
   <div class="mode-toggle" style="margin-bottom:12px">
-    <button class="mode-btn active" id="btnSwipe" onclick="setMode('swipe')">Guide</button>
+    <button class="mode-btn active" id="btnGuide" onclick="setMode('guide')">Guide</button>
     <button class="mode-btn" id="btnCalendar" onclick="setMode('calendar')">Calendar</button>
     <button class="mode-btn full-width" id="btnPremieres" onclick="setMode('premieres')">Premieres</button>
   </div>
@@ -636,7 +636,7 @@ const state = {
   fetchedDates: new Set(),
   networkFilter: "All",
   countries: new Set(["US"]),
-  mode: "swipe",
+  mode: "guide",
   calendarMonth: new Date(),
   premieresWeekOffset: 0,
   debugMode: false,
@@ -1124,16 +1124,16 @@ function showCardHTML(show, index) {
 function setMode(mode) {
   state.mode = mode;
   state.networkFilter = "All";
-  document.getElementById("btnSwipe").classList.toggle("active", mode === "swipe");
+  document.getElementById("btnGuide").classList.toggle("active", mode === "guide");
   document.getElementById("btnCalendar").classList.toggle("active", mode === "calendar");
   document.getElementById("btnPremieres").classList.toggle("active", mode === "premieres");
-  document.getElementById("dateRibbon").style.display = mode === "swipe" ? "" : "none";
+  document.getElementById("dateRibbon").style.display = mode === "guide" ? "" : "none";
   document.getElementById("premieresRibbon").style.display = mode === "premieres" ? "" : "none";
   document.getElementById("calendarWrap").style.display = mode === "calendar" ? "" : "none";
-  document.getElementById("weekBtns").style.display = mode === "swipe" ? "" : "none";
+  document.getElementById("weekBtns").style.display = mode === "guide" ? "" : "none";
   document.getElementById("premieresNav").style.display = mode === "premieres" ? "" : "none";
 
-  if (mode === "swipe") {
+  if (mode === "guide") {
     // Reset to yesterday/today/tomorrow
     state.selectedDates.clear();
     const yest = new Date(); yest.setDate(yest.getDate() - 1);
@@ -1661,6 +1661,35 @@ function updateDebugBanner() {
     if (banner) banner.remove();
   }
 }
+
+// === Hash-based deep linking ===
+// Allows links like tatertv.app/#premieres to open the right tab.
+// Used for push notifications, share buttons, and the wrapped Android app.
+
+const VALID_HASH_MODES = new Set(["guide", "calendar", "premieres"]);
+
+// Wrap setMode so it also updates the URL hash
+const _originalSetMode = setMode;
+setMode = function(mode) {
+  _originalSetMode(mode);
+  if (VALID_HASH_MODES.has(mode) && window.location.hash.slice(1) !== mode) {
+    history.replaceState(null, "", "#" + mode);
+  }
+};
+
+// Read hash on page load and switch to that tab if valid
+function applyHashRoute() {
+  const hash = window.location.hash.slice(1).toLowerCase();
+  if (VALID_HASH_MODES.has(hash) && hash !== state.mode) {
+    setMode(hash);
+  }
+}
+
+// Run once on initial load
+applyHashRoute();
+
+// Run again when hash changes (e.g. user taps another deep link while app is open)
+window.addEventListener("hashchange", applyHashRoute);
 </script>
 </body>
 </html>
