@@ -385,6 +385,16 @@
   .footer a { color: rgba(210,140,60,0.7); text-decoration: none; font-size: 11px; font-family: 'JetBrains Mono', monospace; transition: color 0.2s; }
   .footer a:hover { color: #d28c3c; }
   .footer .footer-brand { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px; color: rgba(210,140,60,0.6); margin-bottom: 8px; }
+  .footer-nav { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 10px; }
+  .footer-nav a {
+    padding: 5px 12px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.45);
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    text-decoration: none; transition: all 0.2s ease;
+  }
+  .footer-nav a:hover { border-color: rgba(210,140,60,0.35); background: rgba(210,140,60,0.08); color: #d28c3c; }
 
 
 
@@ -558,6 +568,7 @@
       <div class="brand-name">TaterTV</div>
     </div>
     <div class="brand-right">
+      <a href="/about.html" class="country-btn">About</a>
     </div>
   </div>
 
@@ -582,10 +593,16 @@
 
   <div class="footer">
     <div class="footer-brand">TaterTV</div>
-    <p>Data from <a href="https://www.tvmaze.com" target="_blank">TVMaze</a></p>
-    <p style="margin-top:8px"><a href="https://tatertv.app">tatertv.app</a> · <a href="/about.html">About</a> · <a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy Policy</a> · <a href="/disclosure.html">Affiliate Disclosure</a></p>
-    <p style="margin-top:6px">Data via <a href="https://www.tvmaze.com" target="_blank" rel="noopener">TVMaze</a> · TaterTV may earn commissions from links on this site. <a href="/disclosure.html">Learn more</a></p>
+    <div class="footer-nav">
+      <a href="https://tatertv.app">tatertv.app</a>
+      <a href="/about.html">About</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/privacy.html">Privacy Policy</a>
+      <a href="/disclosure.html">Affiliate Disclosure</a>
+    </div>
+    <p style="margin-top:10px">TaterTV may earn commissions from links on this site. <a href="/disclosure.html">Learn more</a></p>
     <p style="margin-top:6px">© TaterTV LLC</p>
+    <p style="margin-top:8px">Data via <a href="https://www.tvmaze.com" target="_blank" rel="noopener">TVMaze</a></p>
     <p style="margin-top:10px"><a href="#top">↑ Back to top</a></p>
   </div>
 </div>
